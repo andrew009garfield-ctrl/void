@@ -272,7 +272,7 @@
   },
   "publish": {
     "provider": "github",
-    "owner": "Void",
+    "owner": "andrew009garfield-ctrl",
     "repo": "void",
     "private": false,
     "releaseType": "draft"
