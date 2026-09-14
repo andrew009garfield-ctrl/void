@@ -290,7 +290,7 @@
 
 /* The Signal glow: a comet orbiting a breathing ambient halo around the
    pill. Both identities light it for the thinking state only — brand blue
-   for dictation processing, the agent's purple for agent thinking. */
+   for dictation processing, the agent's teal for agent thinking. */
 .voice-pill-glow-anchor {
   position: relative;
   display: inline-flex;
@@ -308,7 +308,7 @@
 
 .processing-signal-glow {
   --signal-bright: #c084fc;
-  --signal-core: #8b5cf6;
+  --signal-core: #0d9488;
   --signal-deep: #7c3aed;
   --signal-head: #f3e8ff;
   --signal-halo-opacity: 0.8;
@@ -321,9 +321,9 @@
   transition: opacity 220ms ease-out;
 }
 
-/* Agent Mode keeps the identical glow in its purple identity. */
+/* Agent Mode keeps the identical glow in its teal identity. */
 .processing-signal-glow[data-agent="true"] {
-  --signal-bright: #a78bfa;
+  --signal-bright: #14b8a6;
   --signal-core: #8787ff;
   --signal-deep: #7c3aed;
   --signal-head: #f2edff;
