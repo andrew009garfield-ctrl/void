@@ -307,9 +307,9 @@
 }
 
 .processing-signal-glow {
-  --signal-bright: #c084fc;
+  --signal-bright: #5eead4;
   --signal-core: #0d9488;
-  --signal-deep: #7c3aed;
+  --signal-deep: #0d9488;
   --signal-head: #f3e8ff;
   --signal-halo-opacity: 0.8;
   --signal-comet-opacity: 0.95;
@@ -324,8 +324,8 @@
 /* Agent Mode keeps the identical glow in its teal identity. */
 .processing-signal-glow[data-agent="true"] {
   --signal-bright: #14b8a6;
-  --signal-core: #8787ff;
-  --signal-deep: #7c3aed;
+  --signal-core: #14b8a6;
+  --signal-deep: #0d9488;
   --signal-head: #f2edff;
 }
 

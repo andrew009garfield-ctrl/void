@@ -18,10 +18,10 @@
 </p>
 
 <p align="center">
-  <a href="https://void-app.com">Website</a> &middot;
-  <a href="https://docs.void-app.com">Docs</a> &middot;
+  <a href="https://alexishq.in">Website</a> &middot;
+  <a href="https://docs.alexishq.in">Docs</a> &middot;
   <a href="https://github.com/Void/void/releases/latest">Download</a> &middot;
-  <a href="https://docs.void-app.com/api/overview">API</a> &middot;
+  <a href="https://docs.alexishq.in/api/overview">API</a> &middot;
   <a href="https://github.com/Void/void/blob/main/CHANGELOG.md">Changelog</a>
 </p>
 
@@ -53,7 +53,7 @@ Void turns your voice into text, notes, and actions from your desktop. Press a h
 - **Audio import** — transcribe existing audio and video: drag in files, batch-upload, or paste a YouTube/audio URL, with optional speaker detection
 - **Local or cloud — your choice** — all core features (transcription, AI reasoning, speaker diarization, semantic search) work with local models or cloud providers — including GPU-accelerated local Whisper on Metal, CUDA, and Vulkan (AMD/Intel)
 - **Enterprise controls** — enforce organization policy, company SSO and SCIM, and centrally managed Amazon Bedrock or Azure OpenAI access without distributing cloud keys
-- **Public API & MCP** — manage notes and transcriptions programmatically or connect your AI assistant via the [MCP server](https://docs.void-app.com/integrations/mcp)
+- **Public API & MCP** — manage notes and transcriptions programmatically or connect your AI assistant via the [MCP server](https://docs.alexishq.in/integrations/mcp)
 
 ## Quick start
 
@@ -64,17 +64,17 @@ npm install
 npm run dev
 ```
 
-Requires Node.js 24+. See the [full documentation](https://docs.void-app.com/quickstart) for setup guides, platform-specific instructions, and build details.
+Requires Node.js 24+. See the [full documentation](https://docs.alexishq.in/quickstart) for setup guides, platform-specific instructions, and build details.
 
 ## Documentation
 
-Visit **[docs.void-app.com](https://docs.void-app.com)** for:
+Visit **[docs.alexishq.in](https://docs.alexishq.in)** for:
 
-- [Getting started](https://docs.void-app.com/quickstart)
-- [Platform guides](https://docs.void-app.com/platform/macos) (macOS, Windows, Linux)
-- [API reference](https://docs.void-app.com/api/overview)
-- [MCP server setup](https://docs.void-app.com/integrations/mcp)
-- [Troubleshooting](https://docs.void-app.com/troubleshooting)
+- [Getting started](https://docs.alexishq.in/quickstart)
+- [Platform guides](https://docs.alexishq.in/platform/macos) (macOS, Windows, Linux)
+- [API reference](https://docs.alexishq.in/api/overview)
+- [MCP server setup](https://docs.alexishq.in/integrations/mcp)
+- [Troubleshooting](https://docs.alexishq.in/troubleshooting)
 
 Repo examples:
 
@@ -104,7 +104,7 @@ React 19, TypeScript, Tailwind CSS v4, Electron 41, better-sqlite3, whisper.cpp,
 
 ## Contributing
 
-We welcome contributions. Fork the repo, create a feature branch, and open a pull request. See the [contributing guide](https://docs.void-app.com/contributing) for development setup and guidelines.
+We welcome contributions. Fork the repo, create a feature branch, and open a pull request. See the [contributing guide](https://docs.alexishq.in/contributing) for development setup and guidelines.
 
 ## License
 

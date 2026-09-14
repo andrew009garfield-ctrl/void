@@ -5,7 +5,7 @@ privacy-first voice-to-text app, and improvements from the community —
 bug reports, fixes, docs, features — are very welcome.
 
 The canonical contributing guide lives at
-**[docs.void-app.com/contributing](https://docs.void-app.com/contributing)**.
+**[docs.alexishq.in/contributing](https://docs.alexishq.in/contributing)**.
 This file is a short pointer with the repo-local details you may need
 along the way.
 
@@ -25,11 +25,11 @@ along the way.
 **Please do not open public issues for security vulnerabilities.**
 Follow the process in [`SECURITY.md`](../SECURITY.md): use
 [GitHub's private vulnerability reporting](https://github.com/Void/void/security/advisories/new)
-or email `security@void-app.com`.
+or email `security@alexishq.in`.
 
 ## Contributing code
 
-See the [contributing guide](https://docs.void-app.com/contributing)
+See the [contributing guide](https://docs.alexishq.in/contributing)
 for the full workflow, coding conventions, and review expectations.
 The short version:
 

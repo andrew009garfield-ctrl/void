@@ -12,8 +12,8 @@ onboarding).
 
 | Host                                          | Protocol | Port | Purpose                                                                            |
 | --------------------------------------------- | -------- | ---- | ---------------------------------------------------------------------------------- |
-| `api.void-app.com`                          | HTTPS    | 443  | Cloud API: transcription, sync, agent reasoning, settings, usage.                  |
-| `auth.void-app.com`                         | HTTPS    | 443  | Account sign-in and session refresh (Better Auth).                                 |
+| `api.alexishq.in`                          | HTTPS    | 443  | Cloud API: transcription, sync, agent reasoning, settings, usage.                  |
+| `auth.alexishq.in`                         | HTTPS    | 443  | Account sign-in and session refresh (Better Auth).                                 |
 | `github.com`, `objects.githubusercontent.com` | HTTPS    | 443  | Application auto-update (release artifacts via electron-updater, GitHub provider). |
 
 ## Required for streaming transcription
@@ -48,7 +48,7 @@ Contacted only if the user connects Google Calendar in settings.
 | `accounts.google.com`   | HTTPS    | 443  | OAuth authorization.                                        |
 | `oauth2.googleapis.com` | HTTPS    | 443  | OAuth token exchange and revoke.                            |
 | `www.googleapis.com`    | HTTPS    | 443  | Calendar event and calendar list reads.                     |
-| `void-app.com`        | HTTPS    | 443  | OAuth desktop callback redirect (`/auth/desktop-callback`). |
+| `alexishq.in`        | HTTPS    | 443  | OAuth desktop callback redirect (`/auth/desktop-callback`). |
 
 ## Required for URL audio import (optional feature)
 
@@ -103,7 +103,7 @@ Run from a machine on the same network as the user. A successful response
 
 ```sh
 # Void Cloud reachability
-curl -v https://api.void-app.com/api/health
+curl -v https://api.alexishq.in/api/health
 
 # Streaming providers
 curl -v https://api.deepgram.com/v1/projects

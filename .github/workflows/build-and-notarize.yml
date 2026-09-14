@@ -132,7 +132,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
           # Forks and Dependabot get no GH_TOKEN; github.token can't read the private font release.
           BRAND_FONTS_REQUIRED: ${{ secrets.GH_TOKEN && '1' || '0' }}
-          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.void-app.com' }}
+          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.alexishq.in' }}
           VITE_VOID_API_URL: ${{ vars.VITE_VOID_API_URL }}
           VITE_VOID_OAUTH_CALLBACK_URL: ${{ vars.VITE_VOID_OAUTH_CALLBACK_URL }}
 
@@ -245,7 +245,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
-          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.void-app.com' }}
+          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.alexishq.in' }}
           VITE_VOID_API_URL: ${{ vars.VITE_VOID_API_URL }}
           VITE_VOID_OAUTH_CALLBACK_URL: ${{ vars.VITE_VOID_OAUTH_CALLBACK_URL }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -375,7 +375,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN || github.token }}
           # Forks and Dependabot get no GH_TOKEN; github.token can't read the private font release.
           BRAND_FONTS_REQUIRED: ${{ secrets.GH_TOKEN && '1' || '0' }}
-          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.void-app.com' }}
+          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.alexishq.in' }}
           VITE_VOID_API_URL: ${{ vars.VITE_VOID_API_URL }}
           VITE_VOID_OAUTH_CALLBACK_URL: ${{ vars.VITE_VOID_OAUTH_CALLBACK_URL }}
           CSC_IDENTITY_AUTO_DISCOVERY: ${{ github.event_name != 'pull_request' && 'true' || 'false' }}

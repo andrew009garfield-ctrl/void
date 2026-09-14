@@ -12,7 +12,7 @@
 **Please do not open public issues for security vulnerabilities.**
 
 Use [GitHub's private vulnerability reporting](https://github.com/Void/void/security/advisories/new)
-to submit a report. You can also email security@void-app.com.
+to submit a report. You can also email security@alexishq.in.
 
 We will acknowledge your report within **48 hours** and aim to release a fix
 within **7 days** for critical issues.

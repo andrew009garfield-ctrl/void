@@ -11,7 +11,7 @@
 - GitHub repo: https://github.com/andrew009garfield-ctrl/void
 
 ## Blocker: Google OAuth redirect_uri_mismatch
-The auth system is deeply integrated across 74K lines. Multiple files have hardcoded fallback URLs to auth.void-app.com that we've been fixing one by one. The latest fix (oauthLoopbackFlow.js) should resolve it, but needs testing.
+The auth system is deeply integrated across 74K lines. Multiple files have hardcoded fallback URLs to auth.alexishq.in that we've been fixing one by one. The latest fix (oauthLoopbackFlow.js) should resolve it, but needs testing.
 
 ## What We Have
 1. **Auth server** — Cloudflare Worker with D1 database, Google OAuth working

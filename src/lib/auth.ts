@@ -188,7 +188,7 @@ export async function signInWithSocial(provider: SocialProvider): Promise<{ erro
       // does the POST server-side and 302s with the cookies attached.
       const protocol = (await window.electronAPI?.getOAuthProtocol?.()) || "void";
       const url = new URL(`${AUTH_URL}/api/desktop-signin/${provider}`);
-      url.searchParams.set("callbackURL", `${DESKTOP_OAUTH_CALLBACK_URL}?protocol=${protocol}`);
+      url.searchParams.set("callbackURL", DESKTOP_OAUTH_CALLBACK_URL);
       openExternalLink(url.toString());
       return {};
     }
@@ -212,7 +212,7 @@ export async function signInWithSSO(email: string): Promise<{ error?: Error }> {
       const protocol = (await window.electronAPI?.getOAuthProtocol?.()) || "void";
       const url = new URL(`${AUTH_URL}/api/desktop-signin/sso`);
       url.searchParams.set("email", email);
-      url.searchParams.set("callbackURL", `${DESKTOP_OAUTH_CALLBACK_URL}?protocol=${protocol}`);
+      url.searchParams.set("callbackURL", DESKTOP_OAUTH_CALLBACK_URL);
       openExternalLink(url.toString());
       return {};
     }

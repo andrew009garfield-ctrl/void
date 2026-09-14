@@ -139,7 +139,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRAND_FONTS_REQUIRED: "1"
-          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.void-app.com' }}
+          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.alexishq.in' }}
           VITE_VOID_API_URL: ${{ vars.VITE_VOID_API_URL }}
           VITE_VOID_OAUTH_CALLBACK_URL: ${{ vars.VITE_VOID_OAUTH_CALLBACK_URL }}
 
@@ -249,7 +249,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRAND_FONTS_REQUIRED: "1"
-          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.void-app.com' }}
+          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.alexishq.in' }}
           VITE_VOID_API_URL: ${{ vars.VITE_VOID_API_URL }}
           VITE_VOID_OAUTH_CALLBACK_URL: ${{ vars.VITE_VOID_OAUTH_CALLBACK_URL }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
@@ -370,7 +370,7 @@ jobs:
           TARGET_ARCH: ${{ matrix.arch }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           BRAND_FONTS_REQUIRED: "1"
-          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.void-app.com' }}
+          VITE_AUTH_URL: ${{ vars.VITE_AUTH_URL || 'https://auth.alexishq.in' }}
           VITE_VOID_API_URL: ${{ vars.VITE_VOID_API_URL }}
           VITE_VOID_OAUTH_CALLBACK_URL: ${{ vars.VITE_VOID_OAUTH_CALLBACK_URL }}
           CSC_IDENTITY_AUTO_DISCOVERY: true
