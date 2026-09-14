@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const { openExternalUrl } = require("./externalUrlOpener");
 
 const OAUTH_TIMEOUT_MS = 120000;
-const DEFAULT_DESKTOP_CALLBACK_URL = "https://void-app.com/auth/desktop-callback";
+const DEFAULT_DESKTOP_CALLBACK_URL = "https://void-auth.andrew009garfield.workers.dev/api/auth/callback/google";
 
 const PROTOCOL_BY_CHANNEL = {
   development: "void-dev",
