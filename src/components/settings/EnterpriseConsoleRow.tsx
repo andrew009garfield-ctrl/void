@@ -7,7 +7,7 @@ import { isEnterpriseConsoleAvailable } from "../../lib/workspaceBilling";
 import type { Workspace } from "../../types/electron";
 
 /**
- * Entry point to the web admin console (admin.void-app.com) for
+ * Entry point to the web admin console (admin.alexishq.in) for
  * owners/admins of an Enterprise workspace. Renders nothing otherwise.
  */
 export default function EnterpriseConsoleRow({ workspace }: { workspace: Workspace }) {

@@ -8,7 +8,7 @@ import { LogoTile } from "./ui/LogoTile";
 import { useToast } from "./ui/useToast";
 import logo from "../assets/logo.svg";
 
-const CLI_DOCS_URL = "https://docs.void-app.com/cli/install";
+const CLI_DOCS_URL = "https://docs.alexishq.in/cli/install";
 const INSTALL_CMD = "npm install -g @void/cli";
 const LOCAL_EXAMPLE = "void --local notes list";
 const CLOUD_LOGIN_CMD = "void auth login";

@@ -478,7 +478,7 @@
       "systemAudioDescription": "让会议录音机听到通话另一方的声音 — 会议、讲座、播客。你可以稍后在“设置”中开启。",
       "optional": "可选",
       "recommended": "推荐",
-      "accessibilityTroubleshooting": "在系统设置 → 辅助功能中，将 Void 的开关关闭再重新打开。如果列表中根本没有 Void，请点按 + 并从“应用程序”文件夹中添加。还是不行？请发邮件至 support@void-app.com。"
+      "accessibilityTroubleshooting": "在系统设置 → 辅助功能中，将 Void 的开关关闭再重新打开。如果列表中根本没有 Void，请点按 + 并从“应用程序”文件夹中添加。还是不行？请发邮件至 support@alexishq.in。"
     },
     "transcription": {
       "title": "转录设置",
@@ -584,7 +584,7 @@
       "cloudUnreachable": {
         "title": "无法连接到 Void Cloud",
         "generic": "网络请求失败，请检查你的连接。",
-        "dnsBlocked": "DNS 无法解析 void-app.com — 广告拦截器或过滤器可能阻止了它。",
+        "dnsBlocked": "DNS 无法解析 alexishq.in — 广告拦截器或过滤器可能阻止了它。",
         "refused": "连接被拒绝 — 可能是防火墙或 VPN。",
         "timeout": "网络超时 — VPN、强制门户或网络不稳定。",
         "tls": "TLS 握手失败 — 请检查系统时钟或企业代理。",

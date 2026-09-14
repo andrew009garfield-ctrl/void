@@ -54,7 +54,7 @@ export default function SupportDropdown({ className, trigger }: SupportDropdownP
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => openExternal("https://docs.void-app.com")}>
+        <DropdownMenuItem onClick={() => openExternal("https://docs.alexishq.in")}>
           <BookOpen className="me-2 h-4 w-4" />
           {t("support.documentation")}
         </DropdownMenuItem>
@@ -64,9 +64,9 @@ export default function SupportDropdown({ className, trigger }: SupportDropdownP
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={async () => {
-            const result = await window.electronAPI?.openExternal("mailto:support@void-app.com");
+            const result = await window.electronAPI?.openExternal("mailto:support@alexishq.in");
             if (!result?.success) {
-              openExternal("https://mail.google.com/mail/?view=cm&to=support@void-app.com");
+              openExternal("https://mail.google.com/mail/?view=cm&to=support@alexishq.in");
             }
           }}
         >

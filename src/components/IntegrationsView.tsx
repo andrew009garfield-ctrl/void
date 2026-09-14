@@ -26,7 +26,7 @@ import googleCalendarIcon from "../assets/icons/google-calendar.svg";
 import microsoftCalendarIcon from "../assets/icons/microsoft-calendar.svg";
 import appleCalendarIcon from "../assets/icons/apple-calendar.svg";
 
-const API_DOCS_URL = "https://docs.void-app.com/api/overview";
+const API_DOCS_URL = "https://docs.alexishq.in/api/overview";
 
 interface IntegrationsViewProps {
   isPaid: boolean;

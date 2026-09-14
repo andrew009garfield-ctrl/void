@@ -2865,7 +2865,7 @@ export default function SettingsPage({
                             className="w-full h-6 text-[10px] text-muted-foreground"
                             onClick={() =>
                               window.electronAPI?.openExternal?.(
-                                "https://void-app.com/contact-sales"
+                                "https://alexishq.in/contact-sales"
                               )
                             }
                           >
@@ -2881,7 +2881,7 @@ export default function SettingsPage({
                             className="w-full h-6 text-[10px]"
                             onClick={() =>
                               window.electronAPI?.openExternal?.(
-                                "https://void-app.com/contact-sales"
+                                "https://alexishq.in/contact-sales"
                               )
                             }
                           >
@@ -2903,7 +2903,7 @@ export default function SettingsPage({
                           className="mt-2 w-full h-6 text-[10px]"
                           onClick={() =>
                             window.electronAPI?.openExternal?.(
-                              "https://void-app.com/contact-sales"
+                              "https://alexishq.in/contact-sales"
                             )
                           }
                         >

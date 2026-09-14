@@ -46,7 +46,7 @@ import type {
   ShareVisibility,
 } from "../../types/electron";
 
-const SHARE_VIEWER_BASE_URL = "https://notes.void-app.com";
+const SHARE_VIEWER_BASE_URL = "https://notes.alexishq.in";
 const SHARE_VISIBILITY_OPTIONS: Array<{ id: ShareVisibility }> = [
   { id: "private" },
   { id: "invited" },

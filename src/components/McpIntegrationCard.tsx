@@ -10,8 +10,8 @@ import claudeIcon from "../assets/icons/providers/claude.svg";
 import openaiIcon from "../assets/icons/providers/openai.svg";
 import cursorIcon from "../assets/icons/providers/cursor.svg";
 
-const MCP_URL = "https://mcp.void-app.com/mcp";
-const MCP_DOCS_URL = "https://docs.void-app.com/integrations/mcp";
+const MCP_URL = "https://mcp.alexishq.in/mcp";
+const MCP_DOCS_URL = "https://docs.alexishq.in/integrations/mcp";
 
 interface McpIntegrationCardProps {
   isPaid: boolean;

@@ -1,5 +1,5 @@
 {
-  "appId": "com.gizmolabs.void",
+  "appId": "com.microsive.void",
   "afterPack": "scripts/afterPack.js",
   "productName": "Void",
   "protocols": {

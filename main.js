@@ -48,7 +48,7 @@ const DEFAULT_OAUTH_PROTOCOL_BY_CHANNEL = {
   staging: "void-staging",
   production: "void",
 };
-const BASE_WINDOWS_APP_ID = "com.gizmolabs.void";
+const BASE_WINDOWS_APP_ID = "com.microsive.void";
 const DEFAULT_AUTH_BRIDGE_PORT = 5199;
 
 function isElectronBinaryExec() {

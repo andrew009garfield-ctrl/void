@@ -478,7 +478,7 @@
       "systemAudioDescription": "Permette al registratore delle riunioni di sentire l'altro lato delle tue chiamate — riunioni, lezioni, podcast. Puoi attivarlo più tardi nelle Impostazioni.",
       "optional": "Facoltativo",
       "recommended": "Consigliato",
-      "accessibilityTroubleshooting": "In Impostazioni di Sistema → Accessibilità, disattiva l'interruttore di Void e riattivalo. Se Void non compare nell'elenco, fai clic su + e aggiungilo dalla cartella Applicazioni. Ancora problemi? Scrivi a support@void-app.com."
+      "accessibilityTroubleshooting": "In Impostazioni di Sistema → Accessibilità, disattiva l'interruttore di Void e riattivalo. Se Void non compare nell'elenco, fai clic su + e aggiungilo dalla cartella Applicazioni. Ancora problemi? Scrivi a support@alexishq.in."
     },
     "transcription": {
       "title": "Configurazione trascrizione",
@@ -584,7 +584,7 @@
       "cloudUnreachable": {
         "title": "Impossibile raggiungere Void Cloud",
         "generic": "La richiesta di rete è fallita. Controlla la connessione.",
-        "dnsBlocked": "Il DNS non risolve void-app.com — potrebbe esserci un ad blocker o un filtro.",
+        "dnsBlocked": "Il DNS non risolve alexishq.in — potrebbe esserci un ad blocker o un filtro.",
         "refused": "Connessione rifiutata — probabilmente un firewall o una VPN.",
         "timeout": "Timeout di rete — VPN, captive portal o connessione instabile.",
         "tls": "Handshake TLS fallito — controlla l'orologio di sistema o un proxy aziendale.",

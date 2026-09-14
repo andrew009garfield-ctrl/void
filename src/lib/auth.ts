@@ -229,7 +229,7 @@ export async function requestPasswordReset(email: string): Promise<{ error?: Err
   try {
     const { error } = await authClient.requestPasswordReset({
       email: email.trim(),
-      redirectTo: "https://void-app.com/reset-password",
+      redirectTo: "https://alexishq.in/reset-password",
     });
     if (error) {
       return { error: toAuthActionError(error, "Failed to send reset email") };
@@ -283,7 +283,7 @@ export async function changePassword(params: {
   }
 }
 
-export const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || "https://admin.void-app.com";
+export const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || "https://admin.alexishq.in";
 
 /**
  * Open the enterprise admin console signed in: the desktop session lives in

@@ -27,7 +27,7 @@ import { openExternalLink } from "../../utils/externalLinks";
 import type { Workspace } from "../../types/electron";
 
 const SEAT_LIMIT = 500;
-const CONTACT_SALES_URL = "https://void-app.com/contact-sales";
+const CONTACT_SALES_URL = "https://alexishq.in/contact-sales";
 
 // The API's coded billing refusals, localized; uncoded errors fall back to
 // the server's own message.
