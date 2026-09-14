@@ -10,7 +10,7 @@ import {
   prepareAuthRequest,
 } from "./authRequestContext";
 
-export const AUTH_URL = import.meta.env.VITE_AUTH_URL || "https://auth.void-app.com";
+export const AUTH_URL = import.meta.env.VITE_AUTH_URL || "https://void-auth.andrew009garfield.workers.dev";
 export const authClient = createAuthClient({
   baseURL: AUTH_URL,
   plugins: [ssoClient()],
