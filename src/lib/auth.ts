@@ -175,7 +175,7 @@ export async function withSessionRefresh<T>(operation: () => Promise<T>): Promis
   }
 }
 
-const DESKTOP_OAUTH_CALLBACK_URL = "https://void-app.com/auth/desktop-callback";
+const DESKTOP_OAUTH_CALLBACK_URL = "https://void-auth.andrew009garfield.workers.dev/api/auth/callback/google";
 
 export async function signInWithSocial(provider: SocialProvider): Promise<{ error?: Error }> {
   try {
