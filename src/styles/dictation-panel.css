@@ -307,9 +307,9 @@
 }
 
 .processing-signal-glow {
-  --signal-bright: #5eead4;
-  --signal-core: #0d9488;
-  --signal-deep: #0d9488;
+  --signal-bright: #c4b5fd;
+  --signal-core: #6b4f9e;
+  --signal-deep: #6b4f9e;
   --signal-head: #f3e8ff;
   --signal-halo-opacity: 0.8;
   --signal-comet-opacity: 0.95;
@@ -323,9 +323,9 @@
 
 /* Agent Mode keeps the identical glow in its teal identity. */
 .processing-signal-glow[data-agent="true"] {
-  --signal-bright: #14b8a6;
-  --signal-core: #14b8a6;
-  --signal-deep: #0d9488;
+  --signal-bright: #a07be8;
+  --signal-core: #a07be8;
+  --signal-deep: #6b4f9e;
   --signal-head: #f2edff;
 }
 

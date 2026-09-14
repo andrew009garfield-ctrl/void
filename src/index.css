@@ -8,33 +8,33 @@
   /* Void Theme — registers color tokens with Tailwind v4.
      These are the light-mode defaults; .dark overrides them below. */
   /* Midpoint of the brand glass gradient — Ocean Teal theme */
-  --color-primary: #0d9488;
+  --color-primary: #6b4f9e;
   --color-primary-foreground: #ffffff;
   --color-secondary: #f5f5f5;
   --color-secondary-foreground: #171717;
   --color-muted: #f5f5f5;
   --color-muted-foreground: #525252;
-  --color-accent: oklch(0.60 0.18 180);
+  --color-accent: oklch(0.55 0.22 285);
   --color-accent-foreground: #ffffff;
   /* Agent Mode identity, sourced from the supplied sparkle/leaf mark. */
-  --color-agent-brand: #14b8a6;
+  --color-agent-brand: #a07be8;
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
   --color-border: #e5e5e5;
   --color-input: #f9f6f1;
-  --color-ring: #0d9488;
+  --color-ring: #6b4f9e;
   --color-background: #ffffff;
   --color-foreground: #171717;
   --color-card: #ffffff;
   --color-card-foreground: #171717;
   --color-popover: #ffffff;
   --color-popover-foreground: #171717;
-  --color-link: #0d9488;
+  --color-link: #6b4f9e;
   --color-success: #16a34a;
   --color-success-foreground: #ffffff;
   --color-warning: #d97706;
   --color-warning-foreground: #ffffff;
-  --color-info: #0d9488;
+  --color-info: #6b4f9e;
   --color-info-foreground: #ffffff;
 
   /* Surface hierarchy — light mode equivalents */
@@ -115,46 +115,46 @@
 .dark {
   /* Dark mode — charcoal surfaces with clear elevation hierarchy
      Base L=0.22 (charcoal) with 0.05 steps between layers.
-     Hue 175 (teal) with minimal chroma for sophistication. */
-  --color-background: oklch(0.22 0.006 175);
+     Hue 260 (purple) with minimal chroma for sophistication. */
+  --color-background: oklch(0.22 0.006 260);
   --color-foreground: oklch(0.93 0 0);
-  --color-card: oklch(0.27 0.008 175);
+  --color-card: oklch(0.27 0.008 260);
   --color-card-foreground: oklch(0.93 0 0);
-  --color-popover: oklch(0.29 0.009 175);
+  --color-popover: oklch(0.29 0.009 260);
   --color-popover-foreground: oklch(0.93 0 0);
-  --color-primary: oklch(0.65 0.18 175);
+  --color-primary: oklch(0.65 0.2 260);
   --color-primary-foreground: oklch(0.99 0 0);
-  --color-secondary: oklch(0.28 0.007 175);
+  --color-secondary: oklch(0.28 0.007 260);
   --color-secondary-foreground: oklch(0.9 0 0);
-  --color-muted: oklch(0.24 0.006 175);
+  --color-muted: oklch(0.24 0.006 260);
   --color-muted-foreground: oklch(0.65 0 0);
-  --color-accent: oklch(0.68 0.15 175);
+  --color-accent: oklch(0.68 0.18 285);
   --color-accent-foreground: oklch(0.99 0 0);
   --color-destructive: oklch(0.62 0.22 25);
   --color-destructive-foreground: oklch(0.99 0 0);
-  --color-border: oklch(0.35 0.007 175);
-  --color-input: oklch(0.19 0.005 175);
-  --color-ring: oklch(0.65 0.18 175);
+  --color-border: oklch(0.35 0.007 260);
+  --color-input: oklch(0.19 0.005 260);
+  --color-ring: oklch(0.65 0.2 260);
   --color-success: oklch(0.7 0.18 145);
   --color-success-foreground: oklch(0.99 0 0);
   --color-warning: oklch(0.75 0.15 70);
   --color-warning-foreground: oklch(0.15 0 0);
-  --color-info: oklch(0.68 0.15 175);
+  --color-info: oklch(0.68 0.18 240);
   --color-info-foreground: oklch(0.99 0 0);
 
   /* Surface hierarchy — charcoal depth system (0.22 → 0.33) */
-  --color-surface-0: oklch(0.22 0.006 175);
-  --color-surface-1: oklch(0.25 0.007 175);
-  --color-surface-2: oklch(0.27 0.008 175);
+  --color-surface-0: oklch(0.22 0.006 260);
+  --color-surface-1: oklch(0.25 0.007 260);
+  --color-surface-2: oklch(0.27 0.008 260);
   --color-surface-3: oklch(0.3 0.009 175);
-  --color-surface-raised: oklch(0.33 0.01 175);
-  --color-surface-window: oklch(0.19 0.005 175);
+  --color-surface-raised: oklch(0.33 0.01 260);
+  --color-surface-window: oklch(0.19 0.005 260);
 
   /* Border states */
   --color-border-subtle: oklch(0.33 0.006 175);
-  --color-border-hover: oklch(0.42 0.01 175);
-  --color-border-active: oklch(0.5 0.15 175);
-  --color-link: oklch(0.67 0.1 175);
+  --color-border-hover: oklch(0.42 0.01 260);
+  --color-border-active: oklch(0.5 0.15 260);
+  --color-link: oklch(0.67 0.1 250);
 
   /* Card depth shadows — softer for charcoal, with top highlight for premium depth */
   --shadow-card: 0 1px 3px oklch(0 0 0 / 0.2), inset 0 1px 0 oklch(1 0 0 / 0.03);
@@ -1072,7 +1072,7 @@ a:hover {
   background: linear-gradient(
     90deg,
     oklch(0.65 0.18 175 / 0.5),
-    oklch(0.65 0.15 185 / 0.3),
+    oklch(0.7 0.18 280 / 0.3),
     transparent 80%
   );
   pointer-events: none;
@@ -1091,8 +1091,8 @@ a:hover {
 
 /* Toast — opaque dark HUD surface, same in light & dark mode */
 .toast-surface {
-  background: oklch(0.15 0.006 175);
-  border: 1px solid oklch(0.25 0.006 175);
+  background: oklch(0.15 0.006 260);
+  border: 1px solid oklch(0.25 0.006 260);
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.04),
     0 8px 24px -4px oklch(0 0 0 / 0.5),
@@ -1340,7 +1340,7 @@ a:hover {
 .referral-mesh-bg::before {
   width: 300px;
   height: 300px;
-  background: oklch(0.65 0.18 175);
+  background: oklch(0.65 0.2 260);
   opacity: 0.04;
   top: -80px;
   right: -60px;
@@ -1626,9 +1626,9 @@ a:hover {
 .thinking-shimmer-text {
   background: linear-gradient(
     90deg,
-    oklch(0.65 0.01 175) 0%,
+    oklch(0.65 0.01 260) 0%,
     oklch(0.85 0.02 240) 40%,
-    oklch(0.65 0.01 175) 60%,
+    oklch(0.65 0.01 260) 60%,
     oklch(0.78 0.015 250) 100%
   );
   background-size: 200% 100%;

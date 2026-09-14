@@ -32,7 +32,7 @@ const BUBBLE_STYLES = {
 const SPEAKER_COLORS = [
   "text-blue-400",
   "text-green-400",
-  "text-teal-400",
+  "text-purple-400",
   "text-orange-400",
   "text-pink-400",
   "text-cyan-400",
@@ -43,7 +43,7 @@ const SPEAKER_COLORS = [
 const SPEAKER_BORDER_COLORS = [
   "border-s-blue-400/50",
   "border-s-green-400/50",
-  "border-s-teal-400/50",
+  "border-s-purple-400/50",
   "border-s-orange-400/50",
   "border-s-pink-400/50",
   "border-s-cyan-400/50",
