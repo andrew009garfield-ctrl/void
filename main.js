@@ -775,7 +775,7 @@ function resolveAuthUrl() {
     process.env.AUTH_URL ||
     process.env.VITE_AUTH_URL ||
     runtimeEnv.VITE_AUTH_URL ||
-    "https://auth.void-app.com"
+    "https://void-auth.andrew009garfield.workers.dev"
   );
 }
 

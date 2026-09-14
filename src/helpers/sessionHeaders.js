@@ -1,5 +1,5 @@
 const VOID_HOST_PATTERNS = [
-  "https://auth.void-app.com/*",
+  "https://void-auth.andrew009garfield.workers.dev/*",
   "https://api.void-app.com/*",
   "http://localhost:3000/*",
   "http://127.0.0.1:3000/*",

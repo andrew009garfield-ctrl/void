@@ -5980,7 +5980,7 @@ class IPCHandlers {
       process.env.AUTH_URL ||
       process.env.VITE_AUTH_URL ||
       runtimeEnv.VITE_AUTH_URL ||
-      "https://auth.void-app.com";
+      "https://void-auth.andrew009garfield.workers.dev";
 
     const getSessionCookiesFromWindow = async (win) => {
       const scopedUrls = [getAuthUrl(), getApiUrl()].filter(Boolean);
