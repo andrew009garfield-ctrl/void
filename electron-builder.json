@@ -275,6 +275,6 @@
     "owner": "andrew009garfield-ctrl",
     "repo": "void",
     "private": false,
-    "releaseType": "draft"
+    "releaseType": "release"
   }
 }
