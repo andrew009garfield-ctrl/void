@@ -785,6 +785,35 @@ function getOauthCookieName() {
     : "void.session_token";
 }
 
+// Try to exchange a signed token for a Firebase ID token.
+// Firebase tokens are self-contained JWTs that can be used directly as bearer tokens.
+async function exchangeSignedTokenForFirebase(signedToken) {
+  try {
+    // Firebase ID tokens are JWTs - check if the token looks like a JWT
+    // JWTs have three parts separated by dots
+    const parts = signedToken.split('.');
+    if (parts.length !== 3) return null;
+    
+    // Try to decode the payload to verify it's a valid Firebase token
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
+    
+    // Check if it's a Firebase Auth token (has firebase-related claims)
+    if (payload.firebase && payload.user_id) {
+      return signedToken;
+    }
+    
+    // Also accept tokens with aud matching Firebase project
+    const projectId = process.env.VITE_FIREBASE_PROJECT_ID || 'void-auth-app';
+    if (payload.aud === projectId || payload.iss?.includes('firebase')) {
+      return signedToken;
+    }
+    
+    return null;
+  } catch (err) {
+    return null;
+  }
+}
+
 // Older website builds send the signed cookie value as `?token=`; trade it
 // for the raw session.token the bearer plugin expects.
 async function exchangeSignedTokenForRawBearer(signedToken) {
@@ -870,6 +899,14 @@ async function applySessionTokenAndRefresh(token) {
 async function handleOAuthDeepLink(deepLinkUrl) {
   try {
     const parsed = new URL(deepLinkUrl);
+    
+    // Support Firebase ID tokens directly
+    const firebaseToken = parsed.searchParams.get("firebase_token") || parsed.searchParams.get("id_token");
+    if (firebaseToken) {
+      void applySessionTokenAndRefresh(firebaseToken);
+      return;
+    }
+    
     const bearerToken = parsed.searchParams.get("bearer_token");
     if (bearerToken) {
       void applySessionTokenAndRefresh(bearerToken);
@@ -877,7 +914,12 @@ async function handleOAuthDeepLink(deepLinkUrl) {
     }
     const signedToken = parsed.searchParams.get("token");
     if (!signedToken) return;
-    const rawToken = await exchangeSignedTokenForRawBearer(signedToken);
+    
+    // Try Firebase token exchange first, then fall back to old auth server
+    let rawToken = await exchangeSignedTokenForFirebase(signedToken);
+    if (!rawToken) {
+      rawToken = await exchangeSignedTokenForRawBearer(signedToken);
+    }
     if (rawToken) void applySessionTokenAndRefresh(rawToken);
   } catch (err) {
     if (debugLogger) debugLogger.error("Failed to handle OAuth deep link:", err);
@@ -944,10 +986,16 @@ function startAuthBridgeServer() {
     }
 
     let token = requestUrl.searchParams.get("bearer_token") || requestUrl.searchParams.get("token");
+    
+    // Also support Firebase ID tokens
+    if (!token) {
+      token = requestUrl.searchParams.get("firebase_token") || requestUrl.searchParams.get("id_token");
+    }
+    
     if (!token && req.method === "POST") {
       try {
         const body = await parseJsonBody(req);
-        token = body?.bearer_token || body?.token || null;
+        token = body?.bearer_token || body?.token || body?.firebase_token || body?.id_token || null;
       } catch (error) {
         res.writeHead(400, { "Content-Type": "text/plain; charset=utf-8" });
         res.end(error.message || "Invalid request");

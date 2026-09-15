@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { VOID_API_URL } from "../config/constants";
-import { authClient } from "../lib/auth";
+import { sendVerificationEmail, getCurrentUser, onAuthStateChange } from "../lib/auth";
 import { Button } from "./ui/button";
 import { CircleCheck, Loader, Loader2, MailCheck, RefreshCw } from "./icons";
 import { CompactOnboardingFrame } from "./onboarding/OnboardingShell";
@@ -49,39 +49,28 @@ export default function EmailVerificationStep({
     return () => clearTimeout(timer);
   }, [resendCooldown]);
 
+  // Poll for email verification using Firebase Auth state
   useEffect(() => {
-    if (!VOID_API_URL) return;
-
-    const url = `${VOID_API_URL}/api/auth/verification-status?email=${encodeURIComponent(email)}`;
     let stopped = false;
-
-    const checkVerificationStatus = async () => {
-      try {
-        const res = await fetch(url, { credentials: "include" });
-        if (stopped) return;
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data.verified) {
-            setVerified(true);
-            if (pollRef.current) clearInterval(pollRef.current);
-          }
-        } else if (res.status === 401 || res.status === 400) {
-          if (pollRef.current) clearInterval(pollRef.current);
-          setError(t("auth.sessionExpired"));
-        }
-      } catch {
-        // Network error — silently retry on next poll
+    
+    const unsubscribe = onAuthStateChange((user) => {
+      if (stopped) return;
+      
+      if (user && user.emailVerified) {
+        setVerified(true);
+        if (pollRef.current) clearInterval(pollRef.current);
       }
-    };
-
-    // Check immediately so returning from the verification link never leaves the
-    // user staring at a stale waiting state for a full polling interval.
-    void checkVerificationStatus();
-    pollRef.current = setInterval(checkVerificationStatus, 5000);
-
+    });
+    
+    // Also check immediately
+    const user = getCurrentUser();
+    if (user?.emailVerified) {
+      setVerified(true);
+    }
+    
     return () => {
       stopped = true;
+      unsubscribe();
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, [email, t]);
@@ -97,7 +86,7 @@ export default function EmailVerificationStep({
     setIsResending(true);
     setError(null);
     try {
-      const result = await authClient.sendVerificationEmail({ email });
+      const result = await sendVerificationEmail();
       if (result.error) {
         setError(result.error.message || t("emailVerification.errors.resendFailed"));
       } else {

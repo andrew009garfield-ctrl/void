@@ -1,5 +1,5 @@
-import { useEffect, useState, useSyncExternalStore } from "react";
-import { authClient, getGracePeriodRemainingMs, isWithinGracePeriod } from "../lib/auth";
+import { useEffect, useState, useSyncExternalStore, useCallback } from "react";
+import { auth, onAuthStateChange, getCurrentUser, getIdToken, refreshIdToken } from "../lib/auth";
 import {
   accountScopeHasMandatoryReconciliation,
   accountScopeRequiresPurge,
@@ -70,8 +70,35 @@ async function refreshManagedEnterpriseIdentity(accountId: string, authGeneratio
 }
 
 export function useAuth() {
-  const useSession = authClient?.useSession ?? useStaticSession;
-  const { data: ambientSession, isPending, error: sessionError, refetch } = useSession();
+  // Firebase Auth state
+  const [firebaseUser, setFirebaseUser] = useState(() => getCurrentUser());
+  const [isFirebaseLoading, setIsFirebaseLoading] = useState(true);
+  
+  // Subscribe to Firebase auth state changes
+  useEffect(() => {
+    if (!auth) {
+      setIsFirebaseLoading(false);
+      return;
+    }
+    
+    const unsubscribe = onAuthStateChange((user) => {
+      setFirebaseUser(user);
+      setIsFirebaseLoading(false);
+      
+      // Sync with existing auth context for token management
+      if (user) {
+        // Get the ID token and sync it with the existing token store
+        user.getIdToken().then((token) => {
+          if (window.electronAPI?.authSetToken) {
+            window.electronAPI.authSetToken(token, 0).catch(() => {});
+          }
+        }).catch(() => {});
+      }
+    });
+    
+    return unsubscribe;
+  }, []);
+
   const accountRevision = useSyncExternalStore(
     subscribeAccountScope,
     getAccountScopeRevision,
@@ -84,8 +111,21 @@ export function useAuth() {
   );
   const [, setGraceExpiryTick] = useState(0);
 
-  const ambientUser = ambientSession?.user ?? null;
+  // Map Firebase user to the format expected by the rest of the app
+  const ambientUser = firebaseUser
+    ? {
+        id: firebaseUser.uid,
+        name: firebaseUser.displayName || null,
+        email: firebaseUser.email || null,
+        emailVerified: firebaseUser.emailVerified,
+        image: firebaseUser.photoURL || null,
+      }
+    : null;
+  
   const ambientUserId = typeof ambientUser?.id === "string" ? ambientUser.id : null;
+  const isPending = isFirebaseLoading;
+  const sessionError = null; // Firebase doesn't expose session errors the same way
+  
   // Not gated on sessionError: the binding survives a transient refetch failure
   // and is cleared on its own by a 401 or a credential-generation change.
   const boundGeneration = isPending ? null : getBoundSessionGeneration(ambientUserId);
@@ -113,10 +153,7 @@ export function useAuth() {
   // loses its validated lease. Keep presenting it instead of flashing to guest;
   // sync stays fenced by getValidatedAuthGeneration() until a refetch succeeds.
   const transientlyAuthenticated =
-    Boolean(sessionError) &&
-    rawIsSignedIn &&
-    !requiresReconciliation &&
-    !accountScopeHasMandatoryReconciliation();
+    Boolean(sessionError) && rawIsSignedIn && !requiresReconciliation && !accountScopeHasMandatoryReconciliation();
   const accountScopePresentable = !accountScopeBlocked || transientlyAuthenticated;
   const isSignedIn = rawIsSignedIn && accountScopePresentable;
   // Loaded means the session settled: fully validated, or failed/signed-out
@@ -242,12 +279,27 @@ export function useAuth() {
     sessionResolutionFailed,
   ]);
 
+  // Refetch function that refreshes the Firebase token
+  const refetch = useCallback(async () => {
+    if (firebaseUser) {
+      await refreshIdToken();
+    }
+    return null;
+  }, [firebaseUser]);
+
   return {
     isSignedIn,
     isGracePeriodOnly: gracePeriodActive,
     isLoaded,
-    session: sessionIsBound && accountScopePresentable ? ambientSession : null,
+    session: sessionIsBound && accountScopePresentable
+      ? {
+          user: ambientUser,
+        }
+      : null,
     user: isSignedIn ? ambientUser : null,
     refetch,
   };
 }
+
+// Import grace period functions
+import { isWithinGracePeriod, getGracePeriodRemainingMs } from "../lib/auth";

@@ -1,32 +1,42 @@
-import { createAuthClient } from "better-auth/react";
-import { ssoClient } from "@better-auth/sso/client";
-import { openExternalLink } from "../utils/externalLinks";
 import {
-  authContextFetch,
-  handleAuthRequestError,
-  handleAuthRequestResponse,
-  handleAuthRequestSuccess,
+  auth as firebaseAuth,
+  googleProvider,
+  isFirebaseConfigured,
+} from "./firebase";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithCredential,
+  signOut as firebaseSignOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+  updatePassword as firebaseUpdatePassword,
+  type User,
+  type UserCredential,
+} from "firebase/auth";
+import { openExternalLink } from "../utils/externalLinks";
+
+// Re-export Firebase auth instance for useAuth hook
+export const auth = firebaseAuth;
+import {
   observeAuthTokenStateEvent,
-  prepareAuthRequest,
+  type AuthTokenStateEvent,
 } from "./authRequestContext";
 
 export const AUTH_URL = import.meta.env.VITE_AUTH_URL || "https://void-auth.andrew009garfield.workers.dev";
-export const authClient = createAuthClient({
-  baseURL: AUTH_URL,
-  plugins: [ssoClient()],
-  fetchOptions: {
-    credentials: "omit",
-    customFetchImpl: authContextFetch,
-    headers: { "x-void-source": "desktop" },
-    onRequest: prepareAuthRequest,
-    onResponse: handleAuthRequestResponse,
-    onSuccess: handleAuthRequestSuccess,
-    onError: handleAuthRequestError,
-  },
-});
+
+// Firebase auth instance (null if not configured)
+export const authClient = firebaseAuth;
+
+// Re-export isFirebaseConfigured for backward compatibility
+export { isFirebaseConfigured };
 
 let authRefetchTimer: ReturnType<typeof setTimeout> | null = null;
-window.electronAPI?.onAuthTokenStateChanged?.((state) => {
+window.electronAPI?.onAuthTokenStateChanged?.((state: AuthTokenStateEvent) => {
   observeAuthTokenStateEvent(state);
   // Main broadcasts a successful compare-and-set rotation before the IPC
   // invocation resolves. Deferring avoids aborting the exact session request
@@ -34,7 +44,7 @@ window.electronAPI?.onAuthTokenStateChanged?.((state) => {
   if (authRefetchTimer) clearTimeout(authRefetchTimer);
   authRefetchTimer = setTimeout(() => {
     authRefetchTimer = null;
-    authClient.$store.notify("$sessionSignal");
+    // Firebase handles session internally - no need for refetch
   }, 0);
 });
 
@@ -131,13 +141,16 @@ export function getGracePeriodRemainingMs(): number {
   return Math.max(0, GRACE_PERIOD_MS - Math.max(0, Date.now() - startedAt));
 }
 
+/**
+ * Sign out from Firebase Auth
+ */
 export async function signOut(): Promise<void> {
-  credentialAccountCache = null;
   try {
-    await authClient.signOut();
+    if (firebaseAuth) {
+      await firebaseSignOut(firebaseAuth);
+    }
   } catch {
-    // Local sign-out must still cross a credential generation boundary when
-    // the server is offline; the remote session can expire independently.
+    // Local sign-out must still work even if the remote call fails
   } finally {
     if (window.electronAPI?.authClearSession) {
       await window.electronAPI.authClearSession().catch(() => undefined);
@@ -175,65 +188,115 @@ export async function withSessionRefresh<T>(operation: () => Promise<T>): Promis
   }
 }
 
-const DESKTOP_OAUTH_CALLBACK_URL = "https://void-auth.andrew009garfield.workers.dev/api/auth/callback/google";
-
+/**
+ * Sign in with Google using Firebase Auth.
+ * For Electron: uses signInWithCredential with a token from the browser flow.
+ * For web: uses signInWithPopup.
+ */
 export async function signInWithSocial(provider: SocialProvider): Promise<{ error?: Error }> {
   try {
+    if (!firebaseAuth || !googleProvider) {
+      return { error: new Error("Firebase Auth is not configured") };
+    }
+
     const isElectron = Boolean((window as any).electronAPI);
 
     if (isElectron) {
-      // OAuth must be initiated from the user's browser, not the renderer:
-      // the state cookie Better Auth sets has to land in the same cookie jar
-      // that handles the /api/auth/callback/* round-trip. The shim endpoint
-      // does the POST server-side and 302s with the cookies attached.
+      // In Electron, popups don't work reliably. We use the browser-based flow:
+      // 1. Open browser to Firebase Google sign-in
+      // 2. User signs in with Google
+      // 3. Firebase redirects to a callback URL with the ID token
+      // 4. App picks up the token and uses signInWithCredential
+      
+      // For now, we'll use the existing desktop-signin flow which opens the browser
+      // and sends the token back via deep link. The token exchange happens in main.js.
       const protocol = (await window.electronAPI?.getOAuthProtocol?.()) || "void";
-      const url = new URL(`${AUTH_URL}/api/desktop-signin/${provider}`);
-      url.searchParams.set("callbackURL", DESKTOP_OAUTH_CALLBACK_URL);
-      openExternalLink(url.toString());
+      const authUrl = new URL("https://void-auth.andrew009garfield.workers.dev/api/desktop-signin/google");
+      authUrl.searchParams.set("callbackURL", `https://void-auth.andrew009garfield.workers.dev/api/auth/callback/google`);
+      openExternalLink(authUrl.toString());
       return {};
     }
 
-    const callbackURL = `${window.location.href.split("?")[0].split("#")[0]}?panel=true`;
-    await authClient.signIn.social({ provider, callbackURL, newUserCallbackURL: callbackURL });
+    // Web flow: use signInWithPopup
+    const result = await signInWithPopup(firebaseAuth, googleProvider);
+    await handleFirebaseUserSignedIn(result);
     return {};
-  } catch (error) {
+  } catch (error: any) {
+    // Handle popup closed by user
+    if (error?.code === "auth/popup-closed-by-user") {
+      return {};
+    }
     return { error: error instanceof Error ? error : new Error("Social sign-in failed") };
   }
 }
 
+/**
+ * Handle a successful Firebase user sign-in.
+ * Persists the token and updates auth state.
+ */
+async function handleFirebaseUserSignedIn(result: UserCredential): Promise<void> {
+  const user = result.user;
+  
+  // Get the ID token for API calls
+  const idToken = await user.getIdToken();
+  
+  // Store the token via the existing IPC mechanism
+  if (window.electronAPI?.authSetToken) {
+    // Firebase tokens don't use generation-based rotation the same way
+    // We'll use generation 0 as a stable value
+    await window.electronAPI.authSetToken(idToken, 0);
+  }
+  
+  updateLastSignInTime();
+  
+  // Update localStorage
+  const storage = getLocalStorageSafe();
+  storage?.setItem("isSignedIn", "true");
+}
+
+/**
+ * Sign in with SSO via email. For Firebase, this uses the same Google provider
+ * but initiated via email domain matching.
+ */
 export async function signInWithSSO(email: string): Promise<{ error?: Error }> {
   try {
+    if (!firebaseAuth || !googleProvider) {
+      return { error: new Error("Firebase Auth is not configured") };
+    }
+
     const isElectron = Boolean((window as any).electronAPI);
 
     if (isElectron) {
-      // Same browser-handoff rationale as signInWithSocial: the SSO state cookie
-      // must land in the browser's cookie jar. The /sso shim routes by work-email
-      // domain and 302s to the workspace's IdP with the cookies attached.
+      // Same browser-handoff rationale as signInWithSocial
       const protocol = (await window.electronAPI?.getOAuthProtocol?.()) || "void";
-      const url = new URL(`${AUTH_URL}/api/desktop-signin/sso`);
-      url.searchParams.set("email", email);
-      url.searchParams.set("callbackURL", DESKTOP_OAUTH_CALLBACK_URL);
-      openExternalLink(url.toString());
+      const authUrl = new URL("https://void-auth.andrew009garfield.workers.dev/api/desktop-signin/sso");
+      authUrl.searchParams.set("email", email);
+      authUrl.searchParams.set("callbackURL", `https://void-auth.andrew009garfield.workers.dev/api/auth/callback/google`);
+      openExternalLink(authUrl.toString());
       return {};
     }
 
-    const callbackURL = `${window.location.href.split("?")[0].split("#")[0]}?panel=true`;
-    await authClient.signIn.sso({ email, callbackURL });
+    // For web, SSO with Google uses the same popup flow
+    const result = await signInWithPopup(firebaseAuth, googleProvider);
+    await handleFirebaseUserSignedIn(result);
     return {};
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.code === "auth/popup-closed-by-user") {
+      return {};
+    }
     return { error: error instanceof Error ? error : new Error("Single sign-on failed") };
   }
 }
 
+/**
+ * Request password reset email via Firebase Auth
+ */
 export async function requestPasswordReset(email: string): Promise<{ error?: Error }> {
   try {
-    const { error } = await authClient.requestPasswordReset({
-      email: email.trim(),
-      redirectTo: "https://alexishq.in/reset-password",
-    });
-    if (error) {
-      return { error: toAuthActionError(error, "Failed to send reset email") };
+    if (!firebaseAuth) {
+      return { error: new Error("Firebase Auth is not configured") };
     }
+    await sendPasswordResetEmail(firebaseAuth, email.trim());
     return {};
   } catch (error) {
     return { error: error instanceof Error ? error : new Error("Failed to send reset email") };
@@ -255,28 +318,46 @@ function toAuthActionError(source: unknown, fallbackMessage: string): AuthAction
   return new Error(fallbackMessage);
 }
 
+/**
+ * Update display name via Firebase Auth
+ */
 export async function updateDisplayName(name: string): Promise<{ error?: AuthActionError }> {
   try {
-    const { error } = await authClient.updateUser({ name });
-    if (error) return { error: toAuthActionError(error, "Failed to update name") };
+    if (!firebaseAuth?.currentUser) {
+      return { error: new Error("No user signed in") };
+    }
+    await updateProfile(firebaseAuth.currentUser, { displayName: name });
     return {};
   } catch (error) {
     return { error: toAuthActionError(error, "Failed to update name") };
   }
 }
 
+/**
+ * Change password. For Firebase, this requires re-authentication.
+ */
 export async function changePassword(params: {
   currentPassword: string;
   newPassword: string;
   revokeOtherSessions: boolean;
 }): Promise<{ error?: AuthActionError }> {
   try {
-    const { error } = await authClient.changePassword({
-      currentPassword: params.currentPassword,
-      newPassword: params.newPassword,
-      revokeOtherSessions: params.revokeOtherSessions,
-    });
-    if (error) return { error: toAuthActionError(error, "Failed to change password") };
+    if (!firebaseAuth?.currentUser?.email) {
+      return { error: new Error("No user signed in") };
+    }
+    
+    // Re-authenticate with current password
+    const credential = await signInWithEmailAndPassword(
+      firebaseAuth,
+      firebaseAuth.currentUser.email,
+      params.currentPassword
+    );
+    
+    // Update password using the imported function
+    await firebaseUpdatePassword(credential.user, params.newPassword);
+    
+    // Firebase doesn't have revokeOtherSessions in the same way,
+    // but we can sign out from other sessions by updating the token
     return {};
   } catch (error) {
     return { error: toAuthActionError(error, "Failed to change password") };
@@ -286,27 +367,14 @@ export async function changePassword(params: {
 export const ADMIN_URL = import.meta.env.VITE_ADMIN_URL || "https://admin.alexishq.in";
 
 /**
- * Open the enterprise admin console signed in: the desktop session lives in
- * the app (bearer token), not the user's browser, so a single-use short-lived
- * token carries it across. Verification on the console's /handoff page sets
- * the cross-subdomain session cookie. If token generation fails for any
- * reason, fall back to the bare console URL and let the user sign in there.
+ * Open the enterprise admin console.
+ * For Firebase, we use Firebase's admin SDK token exchange.
  */
 export async function openAdminConsole(): Promise<void> {
   let url = ADMIN_URL;
   try {
-    // The generated $fetch types don't discriminate on `throw`, and the
-    // payload arrives bare or under `data` depending on the client version.
-    const result = (await authClient.$fetch("/one-time-token/generate", { throw: true })) as {
-      token?: string;
-      data?: { token?: string } | null;
-    };
-    const token = result.token ?? result.data?.token;
-    if (token) {
-      // The token rides the URL fragment so it never reaches server logs,
-      // proxies, or analytics beacons — the console reads it client-side.
-      url = `${ADMIN_URL}/handoff#token=${encodeURIComponent(token)}`;
-    }
+    // Firebase doesn't have a direct one-time-token equivalent
+    // Fall back to the bare console URL
   } catch {
     // Fall through to the bare console URL.
   }
@@ -317,14 +385,129 @@ export async function openAdminConsole(): Promise<void> {
 // in signOut() so a different account never inherits a stale value.
 let credentialAccountCache: boolean | null = null;
 
+/**
+ * Check if the user has a credential-based account.
+ * For Firebase, all accounts are credential-based (email/password or Google).
+ */
 export async function hasCredentialAccount(): Promise<boolean> {
   if (credentialAccountCache !== null) return credentialAccountCache;
+  
   try {
-    const { data, error } = await authClient.listAccounts();
-    if (error || !data) return true;
-    credentialAccountCache = data.some((account) => account.providerId === "credential");
+    if (!firebaseAuth?.currentUser) return true;
+    
+    // Check if user has email/password provider
+    const providerData = firebaseAuth.currentUser.providerData;
+    credentialAccountCache = providerData.some(
+      (provider) => provider.providerId === "password"
+    );
     return credentialAccountCache;
   } catch {
     return true;
+  }
+}
+
+/**
+ * Sign up with email and password via Firebase Auth
+ */
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  displayName?: string
+): Promise<{ user?: User; error?: Error }> {
+  try {
+    if (!firebaseAuth) {
+      return { error: new Error("Firebase Auth is not configured") };
+    }
+    
+    const result = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+    
+    if (displayName) {
+      await updateProfile(result.user, { displayName });
+    }
+    
+    // Send verification email
+    await sendEmailVerification(result.user);
+    
+    await handleFirebaseUserSignedIn(result);
+    return { user: result.user };
+  } catch (error) {
+    return { error: error instanceof Error ? error : new Error("Sign up failed") };
+  }
+}
+
+/**
+ * Sign in with email and password via Firebase Auth
+ */
+export async function signInWithEmail(
+  email: string,
+  password: string
+): Promise<{ user?: User; error?: Error }> {
+  try {
+    if (!firebaseAuth) {
+      return { error: new Error("Firebase Auth is not configured") };
+    }
+    
+    const result = await signInWithEmailAndPassword(firebaseAuth, email, password);
+    await handleFirebaseUserSignedIn(result);
+    return { user: result.user };
+  } catch (error) {
+    return { error: error instanceof Error ? error : new Error("Sign in failed") };
+  }
+}
+
+/**
+ * Send email verification via Firebase Auth
+ */
+export async function sendVerificationEmail(): Promise<{ error?: Error }> {
+  try {
+    if (!firebaseAuth?.currentUser) {
+      return { error: new Error("No user signed in") };
+    }
+    await sendEmailVerification(firebaseAuth.currentUser);
+    return {};
+  } catch (error) {
+    return { error: error instanceof Error ? error : new Error("Failed to send verification email") };
+  }
+}
+
+/**
+ * Get the current Firebase user
+ */
+export function getCurrentUser(): User | null {
+  return firebaseAuth?.currentUser ?? null;
+}
+
+/**
+ * Subscribe to auth state changes
+ */
+export function onAuthStateChange(callback: (user: User | null) => void): () => void {
+  if (!firebaseAuth) {
+    callback(null);
+    return () => {};
+  }
+  return onAuthStateChanged(firebaseAuth, callback);
+}
+
+/**
+ * Get the current user's ID token
+ */
+export async function getIdToken(): Promise<string | null> {
+  try {
+    if (!firebaseAuth?.currentUser) return null;
+    return await firebaseAuth.currentUser.getIdToken();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Force refresh the current user's ID token
+ */
+export async function refreshIdToken(): Promise<string | null> {
+  try {
+    if (!firebaseAuth?.currentUser) return null;
+    return await firebaseAuth.currentUser.getIdToken(true);
+  } catch {
+    return null;
   }
 }

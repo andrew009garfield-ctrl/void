@@ -8,6 +8,9 @@ import {
   signInWithSocial,
   signInWithSSO,
   updateLastSignInTime,
+  signUpWithEmail,
+  signInWithEmail,
+  sendVerificationEmail,
   type SocialProvider,
 } from "../lib/auth";
 import { discoverEmailAuth } from "../lib/emailAuthDiscovery";
@@ -343,41 +346,43 @@ export default function AuthenticationStep({
           // Set before signup — SDK may trigger isSignedIn before returning
           needsVerificationRef.current = true;
 
-          const result = await authClient.signUp.email({
-            email: email.trim(),
+          const result = await signUpWithEmail(
+            email.trim(),
             password,
-            name: fullName.trim() || email.trim().split("@")[0],
-          });
+            fullName.trim() || email.trim().split("@")[0]
+          );
 
           if (result.error) {
             needsVerificationRef.current = false;
+            const errorMessage = result.error.message || "";
             if (
-              EXISTING_ACCOUNT_ERROR_CODES.has(result.error.code || "") ||
-              errorMessageIncludes(result.error.message, ["already exists", "already registered"])
+              errorMessageIncludes(errorMessage, ["already exists", "already registered", "email-already-in-use"])
             ) {
               setAuthMode("sign-in");
               setError(t("auth.errors.accountExistsSignIn"));
               setPassword("");
             } else {
-              setError(result.error.message || t("auth.errors.createAccountFailed"));
+              setError(errorMessage || t("auth.errors.createAccountFailed"));
             }
           } else {
             updateLastSignInTime();
             onNeedsVerification(email.trim());
           }
         } else {
-          const result = await authClient.signIn.email({
-            email: email.trim(),
-            password,
-          });
+          const result = await signInWithEmail(email.trim(), password);
 
           if (result.error) {
-            if (errorMessageIncludes(result.error.message, ["not found", "no user"])) {
-              setAuthMode("sign-up");
-              setError(t("auth.errors.accountNotFoundCreate"));
+            const errorMessage = result.error.message || "";
+            if (errorMessageIncludes(errorMessage, ["not found", "no user", "user-not-found", "wrong-password", "invalid-credential"])) {
+              if (errorMessageIncludes(errorMessage, ["user-not-found", "no user"])) {
+                setAuthMode("sign-up");
+                setError(t("auth.errors.accountNotFoundCreate"));
+              } else {
+                setError(t("auth.errors.invalidCredentials"));
+              }
               setPassword("");
             } else {
-              setError(result.error.message || t("auth.errors.invalidCredentials"));
+              setError(errorMessage || t("auth.errors.invalidCredentials"));
             }
           } else {
             updateLastSignInTime();
