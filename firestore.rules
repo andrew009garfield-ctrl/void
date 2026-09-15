@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // User profile — created on first sign-in
+    match /users/{userId} {
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User transcriptions
+    match /users/{userId}/transcriptions/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User notes
+    match /users/{userId}/notes/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User folders
+    match /users/{userId}/folders/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User snippets (custom dictionary)
+    match /users/{userId}/snippets/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User settings
+    match /users/{userId}/settings/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User agent conversations
+    match /users/{userId}/conversations/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User agent messages (subcollection of conversations)
+    match /users/{userId}/conversations/{convId}/messages/{msgId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User calendar events
+    match /users/{userId}/calendar_events/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // User contacts
+    match /users/{userId}/contacts/{docId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
