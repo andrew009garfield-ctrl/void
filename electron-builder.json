@@ -155,7 +155,7 @@
     "hardenedRuntime": true,
     "entitlements": "resources/mac/entitlements.mac.plist",
     "entitlementsInherit": "resources/mac/entitlements.mac.plist",
-    "identity": "Gizmo Labs Inc. (T832773L2J)",
+    "identity": null,
     "notarize": true,
     "extraResources": [
       {
@@ -180,7 +180,7 @@
       "endpoint": "https://eus.codesigning.azure.net/",
       "certificateProfileName": "void-release",
       "codeSigningAccountName": "Void",
-      "publisherName": "CN=Gizmo Labs Inc., O=Gizmo Labs Inc., L=Wilmington, S=Delaware, C=US"
+      "publisherName": "CN=Void, O=Void, L=Unknown, S=Unknown, C=US"
     },
     "extraResources": [
       {

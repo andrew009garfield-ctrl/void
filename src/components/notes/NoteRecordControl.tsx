@@ -29,7 +29,7 @@ export function RecordingWave({ className }: { className?: string }) {
       {WAVE_BAR_HEIGHTS.map((height, i) => (
         <span
           key={i}
-          className="w-0.5 rounded-full bg-primary animate-[ow-wave_1s_ease-in-out_infinite] motion-reduce:animate-none"
+          className="w-0.5 rounded-full bg-primary animate-[void-wave_1s_ease-in-out_infinite] motion-reduce:animate-none"
           style={{ height, animationDelay: `${i * 0.15}s` }}
         />
       ))}

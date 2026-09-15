@@ -5,11 +5,11 @@
 }:
 
 let
-  pname = "openwhispr";
+  pname = "void";
   version = "1.7.4";
 
   src = fetchurl {
-    url = "https://github.com/OpenWhispr/openwhispr/releases/download/v${version}/OpenWhispr-${version}-linux-x86_64.AppImage";
+    url = "https://github.com/andrew009garfield-ctrl/void/releases/download/v${version}/Void-${version}-linux-x86_64.AppImage";
     hash = "sha256-hp7FVUi5/K+QiQam8YAOrRsemFkC8MnupT+hhroP+6Y=";
   };
 
@@ -51,8 +51,8 @@ appimageTools.wrapType2 {
 
   meta = {
     description = "Privacy-first desktop voice dictation, meeting transcription & notes";
-    homepage = "https://openwhispr.com/";
-    changelog = "https://github.com/OpenWhispr/openwhispr/releases/tag/v${version}";
+    homepage = "https://void-app.com/";
+    changelog = "https://github.com/andrew009garfield-ctrl/void/releases/tag/v${version}";
     license = lib.licenses.mit;
     sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
     platforms = [ "x86_64-linux" ];

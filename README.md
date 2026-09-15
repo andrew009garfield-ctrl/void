@@ -106,11 +106,17 @@ React 19, TypeScript, Tailwind CSS v4, Electron 41, better-sqlite3, whisper.cpp,
 
 We welcome contributions. Fork the repo, create a feature branch, and open a pull request. See the [contributing guide](https://docs.alexishq.in/contributing) for development setup and guidelines.
 
+## Origin
+
+Void is a fork of [OpenWhispr](https://github.com/OpenWhispr/openwhispr), created by the OpenWhispr Team under the [MIT License](LICENSE). Void builds on their work with a new visual identity, Firebase integration, and additional features.
+
 ## License
 
 [MIT](LICENSE) — free for personal and commercial use.
 
 ## Acknowledgments
+
+- **[OpenWhispr](https://github.com/OpenWhispr/openwhispr)** — original voice dictation app that Void is built upon
 
 - **[OpenAI Whisper](https://github.com/openai/whisper)** — speech recognition model powering local and cloud transcription
 - **[whisper.cpp](https://github.com/ggerganov/whisper.cpp)** — high-performance C++ implementation for local processing

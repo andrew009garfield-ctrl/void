@@ -82,16 +82,16 @@
   --radius-xl: 0.625rem; /* 10px - large cards */
   --radius-shell: 0.75rem; /* 12px - the inset content container in the main window */
 
-  /* Custom Light Mode Brand Colors (Parchment Theme) */
-  --color-parchment-bg: #f9f6f1;
-  --color-parchment-border: #ddd4c7;
-  --color-parchment-text: #2b1f14;
-  --color-parchment-accent: #c0a77d;
-  --color-brand-primary: #2b1f14;
-  --color-brand-accent: #4b2e2b;
-  --color-brand-highlight: #c0a77d;
-  --color-brand-link: #2e3659;
-  --color-pattern: #e7e5e4;
+  /* Custom Light Mode Brand Colors */
+  --color-parchment-bg: #f5f5f5;
+  --color-parchment-border: #e5e5e5;
+  --color-parchment-text: #1a1a2e;
+  --color-parchment-accent: #7c3aed;
+  --color-brand-primary: #1a1a2e;
+  --color-brand-accent: #6d28d9;
+  --color-brand-highlight: #8b5cf6;
+  --color-brand-link: #6d28d9;
+  --color-pattern: #e5e5e5;
 
   /* Model picker premium effects (light mode) */
   --shadow-metallic-light: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -107,9 +107,9 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 0 0 1px rgba(255, 255, 255, 0.16),
     inset 0 -1px 1px rgba(0, 0, 0, 0.12);
   /* The fill under that rim: Button default, mic/send circles, the onboarding brand tile. */
-  --gradient-brand-glass: linear-gradient(180deg, #5588f0 0%, #3466e2 100%);
+  --gradient-brand-glass: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
   /* The brand tile floats over the onboarding hero, so it adds a soft coloured lift. */
-  --shadow-brand-tile: var(--shadow-brand-glass), 0 10px 24px -8px rgb(52 102 226 / 0.45);
+  --shadow-brand-tile: var(--shadow-brand-glass), 0 10px 24px -8px rgb(109 40 217 / 0.45);
 }
 
 .dark {
@@ -146,12 +146,12 @@
   --color-surface-0: oklch(0.22 0.006 260);
   --color-surface-1: oklch(0.25 0.007 260);
   --color-surface-2: oklch(0.27 0.008 260);
-  --color-surface-3: oklch(0.3 0.009 175);
+  --color-surface-3: oklch(0.3 0.009 260);
   --color-surface-raised: oklch(0.33 0.01 260);
   --color-surface-window: oklch(0.19 0.005 260);
 
   /* Border states */
-  --color-border-subtle: oklch(0.33 0.006 175);
+  --color-border-subtle: oklch(0.33 0.006 260);
   --color-border-hover: oklch(0.42 0.01 260);
   --color-border-active: oklch(0.5 0.15 260);
   --color-link: oklch(0.67 0.1 250);
@@ -984,7 +984,7 @@ textarea:not(.input-inline) {
   box-shadow: 0 0 0 2px oklch(from var(--color-ring) l c h / 0.15);
 }
 
-/* Card styling - elevated parchment */
+/* Card styling - elevated */
 .card {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
@@ -1522,7 +1522,7 @@ a:hover {
 }
 
 /* Transcript tab indicator while a meeting is being recorded. */
-@keyframes ow-wave {
+@keyframes void-wave {
   0%,
   100% {
     transform: scaleY(0.4);
