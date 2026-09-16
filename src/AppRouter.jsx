@@ -81,11 +81,11 @@ function MainApp() {
   }, [autoSyncReady, isControlPanel]);
 
   useEffect(() => {
-    // The dictation window cannot resolve a session (see mirrorActiveAccountScope),
-    // so its policy and managed identity follow the main process's account scope.
-    if (!isDictationPanel) return;
+    // Both windows need to mirror the account scope for policy and identity.
+    // Previously only the dictation panel ran this, causing the control panel
+    // to never call fetchPolicy() — leaving policyStatus stuck at "idle".
     return mirrorActiveAccountScope();
-  }, [isDictationPanel]);
+  }, []);
 
   useEffect(() => {
     if (!authLoaded) return;

@@ -547,11 +547,12 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
         }
 
         if (mode === "cloud") {
-          const health = await window.electronAPI?.cloudHealthCheck?.();
-          if (health && !health.ok && health.status === undefined) {
-            setFatalError(t(health.messageKey || "streaming.errors.cloudUnreachable.generic"));
-            return;
-          }
+          // Skip cloud health check for now — Void Cloud API not yet deployed
+          // const health = await window.electronAPI?.cloudHealthCheck?.();
+          // if (health && !health.ok && health.status === undefined) {
+          //   setFatalError(t(health.messageKey || "streaming.errors.cloudUnreachable.generic"));
+          //   return;
+          // }
         }
 
         await window.electronAPI?.saveAllKeysToEnv?.();

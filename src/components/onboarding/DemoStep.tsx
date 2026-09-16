@@ -16,7 +16,7 @@ import type {
   OnboardingDemoKind,
   OnboardingDemoStatus,
 } from "../../types/electron";
-import founderAvatar from "../../assets/onboarding-founder.webp";
+import founderAvatar from "../../assets/logo.svg";
 import gmailMark from "../../assets/icons/gmail.svg";
 
 /**

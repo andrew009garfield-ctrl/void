@@ -251,7 +251,7 @@
         "titleLineOne": "Essayez votre",
         "titleLineTwo": "première dictée",
         "description": "Appuyez sur {{hotkey}} et parlez. Void transformera votre voix en texte.",
-        "founder": "Bonjour, je suis Gabe, le fondateur. Merci d’essayer Void !",
+        "founder": "Bonjour, merci d’essayer Void !",
         "prompt": "Cliquez dans le champ ci-dessous, appuyez sur votre raccourci et dites-moi : qu’aimeriez-vous qu’Void fasse pour vous ?",
         "placeholder": "Cliquez ici, puis appuyez sur votre raccourci. Void écrit dans n’importe quel champ de texte."
       },

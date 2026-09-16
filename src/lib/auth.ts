@@ -6,6 +6,8 @@ import {
 import {
   GoogleAuthProvider,
   signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signInWithCredential,
   signOut as firebaseSignOut,
   onAuthStateChanged,
@@ -152,6 +154,10 @@ export async function signOut(): Promise<void> {
   } catch {
     // Local sign-out must still work even if the remote call fails
   } finally {
+    // Clear account scope
+    if (window.electronAPI?.setActiveAccountScope) {
+      await window.electronAPI.setActiveAccountScope(null, 0).catch(() => undefined);
+    }
     if (window.electronAPI?.authClearSession) {
       await window.electronAPI.authClearSession().catch(() => undefined);
     }
@@ -202,19 +208,10 @@ export async function signInWithSocial(provider: SocialProvider): Promise<{ erro
     const isElectron = Boolean((window as any).electronAPI);
 
     if (isElectron) {
-      // In Electron, popups don't work reliably. We use the browser-based flow:
-      // 1. Open browser to Firebase Google sign-in
-      // 2. User signs in with Google
-      // 3. Firebase redirects to a callback URL with the ID token
-      // 4. App picks up the token and uses signInWithCredential
-      
-      // For now, we'll use the existing desktop-signin flow which opens the browser
-      // and sends the token back via deep link. The token exchange happens in main.js.
-      const protocol = (await window.electronAPI?.getOAuthProtocol?.()) || "void";
-      const authUrl = new URL("https://void-auth.andrew009garfield.workers.dev/api/desktop-signin/google");
-      authUrl.searchParams.set("callbackURL", `https://void-auth.andrew009garfield.workers.dev/api/auth/callback/google`);
-      openExternalLink(authUrl.toString());
-      return {};
+      // Google sign-in via popup is blocked in Electron.
+      // For now, use email/password sign-in instead.
+      // Google sign-in will be added via a Cloud Function later.
+      return { error: new Error("Google sign-in is not yet available in the desktop app. Please use email/password sign-in.") };
     }
 
     // Web flow: use signInWithPopup
@@ -236,19 +233,25 @@ export async function signInWithSocial(provider: SocialProvider): Promise<{ erro
  */
 async function handleFirebaseUserSignedIn(result: UserCredential): Promise<void> {
   const user = result.user;
-  
+
   // Get the ID token for API calls
   const idToken = await user.getIdToken();
-  
+
   // Store the token via the existing IPC mechanism
   if (window.electronAPI?.authSetToken) {
-    // Firebase tokens don't use generation-based rotation the same way
-    // We'll use generation 0 as a stable value
     await window.electronAPI.authSetToken(idToken, 0);
   }
-  
+
+  // Get current generation and set active account scope
+  // CRITICAL: Without this, policyStatus stays "idle" and loading screen is stuck
+  const tokenState = await window.electronAPI?.authGetTokenState?.();
+  const generation = tokenState?.generation ?? 0;
+  if (window.electronAPI?.setActiveAccountScope) {
+    await window.electronAPI.setActiveAccountScope(user.uid, generation);
+  }
+
   updateLastSignInTime();
-  
+
   // Update localStorage
   const storage = getLocalStorageSafe();
   storage?.setItem("isSignedIn", "true");
@@ -267,12 +270,9 @@ export async function signInWithSSO(email: string): Promise<{ error?: Error }> {
     const isElectron = Boolean((window as any).electronAPI);
 
     if (isElectron) {
-      // Same browser-handoff rationale as signInWithSocial
-      const protocol = (await window.electronAPI?.getOAuthProtocol?.()) || "void";
-      const authUrl = new URL("https://void-auth.andrew009garfield.workers.dev/api/desktop-signin/sso");
-      authUrl.searchParams.set("email", email);
-      authUrl.searchParams.set("callbackURL", `https://void-auth.andrew009garfield.workers.dev/api/auth/callback/google`);
-      openExternalLink(authUrl.toString());
+      // Use Firebase signInWithPopup — same as Google sign-in
+      const result = await signInWithPopup(firebaseAuth, googleProvider);
+      await handleFirebaseUserSignedIn(result);
       return {};
     }
 

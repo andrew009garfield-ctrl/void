@@ -251,7 +251,7 @@
         "titleLineOne": "Try your",
         "titleLineTwo": "first dictation",
         "description": "Press {{hotkey}} and start speaking. Void will turn your voice into text.",
-        "founder": "Hey, I’m Gabe, the founder. Thanks for trying Void!",
+        "founder": "Hey, thanks for trying Void!",
         "prompt": "Click the box below, press your shortcut, and tell me: what would you love Void to do for you?",
         "placeholder": "Click here, then press your shortcut. Void types into any text box."
       },

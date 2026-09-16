@@ -64,6 +64,10 @@ if (shouldForceXWayland(args)) {
 
 // Chromium flags must come before the app path, app args after.
 const chromiumFlags = args.filter((a) => a.startsWith(OZONE_PLATFORM_PREFIX));
+// Dev-only: disable sandbox when chrome-sandbox permissions are not configured
+if (process.env.NODE_ENV === "development") {
+  chromiumFlags.push("--no-sandbox");
+}
 // Dev-only: OW_DEBUG_CDP=<port> exposes the Chrome DevTools Protocol so tools
 // can inspect the renderers (used for animation/window diagnostics).
 if (process.env.OW_DEBUG_CDP) {

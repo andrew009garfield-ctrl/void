@@ -251,7 +251,7 @@
         "titleLineOne": "Prueba tu",
         "titleLineTwo": "primer dictado",
         "description": "Pulsa {{hotkey}} y empieza a hablar. Void convertirá tu voz en texto.",
-        "founder": "Hola, soy Gabe, el fundador. ¡Gracias por probar Void!",
+        "founder": "¡Hola, gracias por probar Void!",
         "prompt": "Haz clic en el cuadro de abajo, pulsa tu atajo y cuéntame: ¿qué te encantaría que Void hiciera por ti?",
         "placeholder": "Haz clic aquí y luego pulsa tu atajo. Void escribe en cualquier cuadro de texto."
       },

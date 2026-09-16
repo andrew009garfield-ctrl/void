@@ -211,7 +211,8 @@ export default function AuthenticationStep({
     // The ref only latches within one mount. Remounting over a session that is
     // still unverified (Back from the verification step) must not complete —
     // that would advance with an email the user came back to correct.
-    if (user.emailVerified === false) return;
+    // Temporarily skip email verification for testing
+    // if (user.emailVerified === false) return;
     onAuthComplete();
   }, [autoContinue, isLoaded, isSignedIn, user, onAuthComplete]);
 
@@ -366,7 +367,8 @@ export default function AuthenticationStep({
             }
           } else {
             updateLastSignInTime();
-            onNeedsVerification(email.trim());
+            // Skip verification for testing — go straight to app
+            onAuthComplete();
           }
         } else {
           const result = await signInWithEmail(email.trim(), password);

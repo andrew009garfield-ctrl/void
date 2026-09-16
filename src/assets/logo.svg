@@ -1,7 +1,14 @@
 <svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="1024" height="1024" rx="241" fill="#2056DF"/>
-<circle cx="512" cy="512" r="314" fill="#2056DF" stroke="white" stroke-width="74"/>
-<path d="M512 383V641" stroke="white" stroke-width="74" stroke-linecap="round"/>
-<path d="M627 457V568" stroke="white" stroke-width="74" stroke-linecap="round"/>
-<path d="M397 457V568" stroke="white" stroke-width="74" stroke-linecap="round"/>
+  <!-- Dark navy rounded background -->
+  <rect width="1024" height="1024" rx="220" fill="#1a1b3a"/>
+  <!-- Outer circle (white/light) -->
+  <circle cx="560" cy="512" r="320" fill="none" stroke="#e8e4df" stroke-width="48"/>
+  <!-- Middle circle -->
+  <circle cx="560" cy="512" r="240" fill="none" stroke="#c4b5fd" stroke-width="40"/>
+  <!-- Inner circle -->
+  <circle cx="560" cy="512" r="160" fill="none" stroke="#8b5cf6" stroke-width="36"/>
+  <!-- Center filled circle -->
+  <circle cx="560" cy="512" r="80" fill="#1a1b3a"/>
+  <!-- Audio waveform on the left -->
+  <path d="M120 512 L140 512 L140 480 L160 480 L160 544 L180 544 L180 448 L200 448 L200 576 L220 576 L220 416 L240 416 L240 608 L260 608 L260 384 L280 384 L280 640 L300 640 L300 352 L320 352 L320 672 L340 672 L340 320 L360 320 L360 704 L380 704 L380 352 L400 352 L400 672 L420 672 L420 384 L440 384 L440 640 L460 640 L460 416 L480 416 L480 608 L500 608 L500 448 L520 448 L520 576" stroke="#8b5cf6" stroke-width="8" stroke-linecap="round" fill="none"/>
 </svg>

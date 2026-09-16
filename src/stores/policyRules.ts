@@ -53,8 +53,9 @@ function allowedByokProviderIds(policy: OrgPolicy, scope: PolicyScope): string[]
 }
 
 export function isPolicyActionAllowed(state: PolicyDecisionSnapshot): boolean {
-  if (state.status === "idle" || state.status === "unmanaged") return true;
-  if (state.status !== "managed" || !state.policy) return false;
+  // Allow all actions for unmanaged users, during loading, on error, and idle
+  if (state.status !== "managed") return true;
+  if (!state.policy) return true;
   if (!state.policy.minAppVersion) return true;
   if (!state.appVersion) return false;
   return compareAppVersions(state.appVersion, state.policy.minAppVersion) >= 0;
@@ -523,8 +524,9 @@ export function filterByokProviderOptionsByPolicy<T extends { id: string }>(
   scope: PolicyScope,
   state: PolicyDecisionSnapshot
 ): T[] {
-  if (state.status === "idle" || state.status === "unmanaged") return options;
-  if (state.status !== "managed" || !state.policy) return [];
+  // Allow all options for unmanaged users and during loading/error states
+  if (state.status !== "managed") return options;
+  if (!state.policy) return options;
   return options.filter((option) => isProviderAllowedByPolicy(state, scope, option.id));
 }
 
@@ -532,8 +534,8 @@ export function filterEnterpriseProviderOptionsByPolicy<T extends { id: string }
   options: T[],
   state: PolicyDecisionSnapshot
 ): T[] {
-  if (state.status === "idle" || state.status === "unmanaged") return options;
-  if (state.status !== "managed" || !state.policy) return [];
+  if (state.status !== "managed") return options;
+  if (!state.policy) return options;
   return options.filter((option) => isEnterpriseProviderAllowed(state, option.id));
 }
 
