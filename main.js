@@ -100,6 +100,10 @@ require("dotenv").config({
   override: false,
 });
 
+// Ensure audio cues and earcons play reliably without requiring explicit user gesture
+// in hidden or transparent floating overlay windows.
+app.commandLine.appendSwitch("autoplay-policy", "no-user-gesture-required");
+
 // Chromium's Windows-only occlusion tracker misclassifies the always-on-top
 // transparent pill as occluded, throttling its renderer and jittering animations.
 if (process.platform === "win32") {
@@ -959,8 +963,31 @@ function parseJsonBody(req) {
   });
 }
 
-function writeCorsHeaders(res) {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+const ALLOWED_AUTH_ORIGINS = new Set([
+  "https://void-auth-app-2.firebaseapp.com",
+  "https://alexishq.in",
+  "https://auth.alexishq.in",
+]);
+
+function isOriginAllowed(origin) {
+  if (!origin) return true; // Direct non-browser HTTP or same-origin
+  if (ALLOWED_AUTH_ORIGINS.has(origin)) return true;
+  try {
+    const parsed = new URL(origin);
+    if (parsed.hostname === "127.0.0.1" || parsed.hostname === "localhost") {
+      return true;
+    }
+  } catch {
+    return false;
+  }
+  return false;
+}
+
+function writeCorsHeaders(req, res) {
+  const origin = req.headers.origin;
+  if (origin && isOriginAllowed(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
@@ -971,7 +998,14 @@ function startAuthBridgeServer() {
   }
 
   authBridgeServer = http.createServer(async (req, res) => {
-    writeCorsHeaders(res);
+    const origin = req.headers.origin;
+    if (origin && !isOriginAllowed(origin)) {
+      res.writeHead(403, { "Content-Type": "text/plain; charset=utf-8" });
+      res.end("Origin not allowed");
+      return;
+    }
+
+    writeCorsHeaders(req, res);
     if (req.method === "OPTIONS") {
       res.writeHead(204);
       res.end();

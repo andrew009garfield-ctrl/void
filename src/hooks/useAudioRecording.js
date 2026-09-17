@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import AudioManager from "../helpers/audioManager";
 import logger from "../utils/logger";
-import { playStartCue, playStopCue } from "../utils/dictationCues";
+import { playStartCue, playStopCue, playErrorCue, playSuccessCue } from "../utils/dictationCues";
 import { getSettings } from "../stores/settingsStore";
 import { expandSnippets } from "../utils/snippets";
 import { getRecordingErrorTitle, getRecordingErrorDescription } from "../utils/recordingErrors";
@@ -330,6 +330,7 @@ export const useAudioRecording = (toast, options = {}) => {
       ).trim() || fallback.trim();
 
     const showDictationError = ({ title, description, transcript = "", duration }) => {
+      void playErrorCue();
       const recoverAssistant = Boolean(audioManagerRef.current?.voiceAgentRequested);
       onDictationError?.({ recoverAssistant });
       const recoverableTranscript = getRecoverableTranscript(transcript);
@@ -677,6 +678,7 @@ export const useAudioRecording = (toast, options = {}) => {
             // failed paste keeps the final flash so the transcript stays
             // visible somewhere.
             if (pasteSucceeded) {
+              void playSuccessCue();
               window.electronAPI?.hideDictationPreview?.();
               if (result.cleanupFailure) recordCleanupFailure(result.cleanupFailure);
             }
