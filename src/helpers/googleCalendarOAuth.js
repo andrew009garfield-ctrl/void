@@ -12,11 +12,15 @@ class GoogleCalendarOAuth {
   }
 
   getClientId() {
-    return process.env.GOOGLE_CALENDAR_CLIENT_ID;
+    return (
+      process.env.GOOGLE_CALENDAR_CLIENT_ID ||
+      process.env.GOOGLE_CLIENT_ID ||
+      "566449186826-9cibtr8971aojqh0k39giq573kcqioci.apps.googleusercontent.com"
+    );
   }
 
   getClientSecret() {
-    return process.env.GOOGLE_CALENDAR_CLIENT_SECRET;
+    return process.env.GOOGLE_CALENDAR_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET || "";
   }
 
   startOAuthFlow() {
