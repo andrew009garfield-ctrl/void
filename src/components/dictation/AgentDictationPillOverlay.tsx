@@ -212,6 +212,16 @@ export default function AgentDictationPillOverlay() {
 
   return (
     <main className="agent-dictation-pill-window dictation-window">
+      {/* Screen reader live region for non-sighted users to track dictation state */}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        className="sr-only"
+      >
+        {label}
+      </div>
+
       <div
         className={`voice-pill-position voice-pill-position-${voicePillDock} fixed z-50`}
         style={
