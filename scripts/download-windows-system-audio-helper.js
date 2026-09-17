@@ -19,7 +19,7 @@ const {
   setExecutable,
 } = require("./lib/download-utils");
 
-const REPO = "andrew009garfield-ctrl/openwhispr";
+const REPO = "OpenWhispr/openwhispr";
 const TAG_PREFIX = "windows-system-audio-helper-v";
 const ZIP_NAME = "windows-system-audio-helper-win32-x64.zip";
 const BINARY_NAME = "windows-system-audio-helper.exe";
