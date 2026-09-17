@@ -66,6 +66,22 @@ export default function EmailVerificationStep({
     const user = getCurrentUser();
     if (user?.emailVerified) {
       setVerified(true);
+    } else if (user) {
+      // Periodic reload to catch verification without requiring manual re-auth
+      pollRef.current = setInterval(async () => {
+        try {
+          const currentUser = getCurrentUser();
+          if (currentUser) {
+            await currentUser.reload();
+            if (currentUser.emailVerified) {
+              setVerified(true);
+              if (pollRef.current) clearInterval(pollRef.current);
+            }
+          }
+        } catch {
+          // Network hiccup during poll; will retry next interval
+        }
+      }, 3000);
     }
     
     return () => {

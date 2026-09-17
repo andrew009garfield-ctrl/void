@@ -208,10 +208,15 @@ export async function signInWithSocial(provider: SocialProvider): Promise<{ erro
     const isElectron = Boolean((window as any).electronAPI);
 
     if (isElectron) {
-      // Google sign-in via popup is blocked in Electron.
-      // For now, use email/password sign-in instead.
-      // Google sign-in will be added via a Cloud Function later.
-      return { error: new Error("Google sign-in is not yet available in the desktop app. Please use email/password sign-in.") };
+      if (provider === "google") {
+        // Open the system browser for Google OAuth.
+        // Upon consent, the worker redirects to void://auth?token=... which main.js captures
+        const callbackUrl = "void://auth";
+        const signinUrl = `${AUTH_URL}/api/desktop-signin/google?callbackURL=${encodeURIComponent(callbackUrl)}`;
+        openExternalLink(signinUrl);
+        return {};
+      }
+      return { error: new Error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} sign-in is not yet supported. Please use Google or email/password.`) };
     }
 
     // Web flow: use signInWithPopup
