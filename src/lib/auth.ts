@@ -263,22 +263,25 @@ async function handleFirebaseUserSignedIn(result: UserCredential): Promise<void>
 }
 
 /**
- * Sign in with SSO via email. For Firebase, this uses the same Google provider
- * but initiated via email domain matching.
+ * Sign in with SSO via email. In Electron, this routes to the browser-based
+ * Google SSO flow passing the email as a login_hint.
  */
 export async function signInWithSSO(email: string): Promise<{ error?: Error }> {
   try {
-    if (!firebaseAuth || !googleProvider) {
-      return { error: new Error("Firebase Auth is not configured") };
-    }
-
     const isElectron = Boolean((window as any).electronAPI);
 
     if (isElectron) {
-      // Use Firebase signInWithPopup — same as Google sign-in
-      const result = await signInWithPopup(firebaseAuth, googleProvider);
-      await handleFirebaseUserSignedIn(result);
+      const callbackUrl = "void://auth";
+      let signinUrl = `${AUTH_URL}/api/desktop-signin/google?callbackURL=${encodeURIComponent(callbackUrl)}`;
+      if (email?.trim()) {
+        signinUrl += `&login_hint=${encodeURIComponent(email.trim())}`;
+      }
+      openExternalLink(signinUrl);
       return {};
+    }
+
+    if (!firebaseAuth || !googleProvider) {
+      return { error: new Error("Firebase Auth is not configured") };
     }
 
     // For web, SSO with Google uses the same popup flow

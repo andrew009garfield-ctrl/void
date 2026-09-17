@@ -811,6 +811,11 @@ async function exchangeSignedTokenForFirebase(signedToken) {
     if (payload.aud === projectId || payload.iss?.includes('firebase')) {
       return signedToken;
     }
+
+    // Also accept our auth worker JWTs (containing userId and email)
+    if (payload.userId && payload.email) {
+      return signedToken;
+    }
     
     return null;
   } catch (err) {
