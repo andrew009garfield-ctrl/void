@@ -1,5 +1,10 @@
 const VOID_HOST_PATTERNS = [
   "https://void-auth-app-2.firebaseapp.com/*",
+  // The auth worker itself: Electron's file:// renderer sends Origin: null,
+  // which the worker's CORS allowlist rejects (by design, V-008). Spoofing
+  // Origin to the request's own origin keeps renderer calls to the worker
+  // working under the tightened allowlist.
+  "https://void-auth.andrew009garfield.workers.dev/*",
   "https://api.alexishq.in/*",
   "http://localhost:3000/*",
   "http://127.0.0.1:3000/*",

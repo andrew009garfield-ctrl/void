@@ -562,7 +562,7 @@ test("self-hosted streaming preserves think tags when thinking is enabled", asyn
   assert.equal(await collectAgentText(stream), "<think>visible</think>Answer");
 });
 
-test("non-local streaming remains unfiltered", async (t) => {
+test("non-local streaming gets filtered if disableThinking is true", async (t) => {
   const { reasoningService } = await loadReasoningService(
     t,
     "void-cloud-streaming-think-test-",
@@ -582,7 +582,7 @@ test("non-local streaming remains unfiltered", async (t) => {
     {}
   );
 
-  assert.equal(await collectAgentText(stream), "<think>visible</think>Answer");
+  assert.equal(await collectAgentText(stream), "Answer");
 });
 
 test("chat cancellation leaves single-shot reasoning alive until all requests are cancelled", async (t) => {

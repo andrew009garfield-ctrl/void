@@ -143,16 +143,15 @@ test("email authentication discovers accounts, restores drafts, and persists the
       `,
       "/lib/auth": `
         export const AUTH_URL = "https://auth.example.test";
-        export const authClient = {
-          signUp: {
-            async email(payload) {
-              const harness = globalThis.__authenticationStepHarness;
-              harness.signupPayload = payload;
-              return harness.signupResult;
-            },
-          },
-          signIn: { async email() { return {}; } },
-        };
+        export const authClient = {};
+        export async function signUpWithEmail(email, password, name) {
+          const harness = globalThis.__authenticationStepHarness;
+          harness.signupPayload = { email, password, name };
+          return harness.signupResult;
+        }
+        export async function signInWithEmail(email, password) {
+          return {};
+        }
         export async function signInWithSocial() { return {}; }
         export async function signInWithSSO(email) {
           const harness = globalThis.__authenticationStepHarness;

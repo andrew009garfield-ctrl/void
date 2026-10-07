@@ -5971,6 +5971,7 @@ class IPCHandlers {
     })();
 
     const getApiUrl = () =>
+      process.env.ORACLE_API_URL ||
       process.env.VOID_API_URL ||
       process.env.VITE_VOID_API_URL ||
       runtimeEnv.VITE_VOID_API_URL ||

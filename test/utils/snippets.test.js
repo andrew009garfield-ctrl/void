@@ -138,10 +138,10 @@ test("findSnippetTriggerRanges reports where each trigger occurs", () => {
   const snippets = [{ trigger: "void review", replacement: "Review the PR" }];
 
   assert.deepEqual(findSnippetTriggerRanges("void review this PR", snippets), [
-    { start: 0, end: 17 },
+    { start: 0, end: 11 },
   ]);
   assert.deepEqual(findSnippetTriggerRanges("please void review it", snippets), [
-    { start: 7, end: 24 },
+    { start: 7, end: 18 },
   ]);
   assert.deepEqual(findSnippetTriggerRanges("nothing to expand here", snippets), []);
   assert.deepEqual(findSnippetTriggerRanges("void review", null), []);

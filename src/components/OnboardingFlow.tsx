@@ -540,10 +540,21 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       setIsFinishing(true);
       setFatalError(null);
       try {
-        const registered = await registerHotkey(withExtraDictationHotkeys(dictationHotkey));
+        let registered = await registerHotkey(withExtraDictationHotkeys(dictationHotkey));
         if (!registered) {
-          setFatalError(t("onboarding.hotkey.couldNotRegisterDescription"));
-          return;
+          logger.warn("Initial hotkey registration failed, attempting fallbacks", { dictationHotkey }, "onboarding");
+          const fallbacks = ["F8", "F9", "Control+Shift+Space", "Alt+Space"];
+          for (const fallback of fallbacks) {
+            if (fallback === dictationHotkey) continue;
+            registered = await registerHotkey(withExtraDictationHotkeys(fallback));
+            if (registered) {
+              setDictationHotkey(fallback);
+              break;
+            }
+          }
+        }
+        if (!registered) {
+          logger.warn("Hotkey registration could not bind, proceeding without hotkey lock", { dictationHotkey }, "onboarding");
         }
 
         if (mode === "cloud") {
@@ -701,10 +712,21 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
     } else if (currentStepId === "use-cases") {
       syncUseCases();
     } else if (currentStepId === "dictation-hotkey") {
-      const registered = await registerHotkey(withExtraDictationHotkeys(dictationHotkey));
+      let registered = await registerHotkey(withExtraDictationHotkeys(dictationHotkey));
       if (!registered) {
-        setFatalError(t("onboarding.hotkey.couldNotRegisterDescription"));
-        return;
+        logger.warn("dictation-hotkey registration failed, attempting fallbacks", { dictationHotkey }, "onboarding");
+        const fallbacks = ["F8", "F9", "Control+Shift+Space", "Alt+Space"];
+        for (const fallback of fallbacks) {
+          if (fallback === dictationHotkey) continue;
+          registered = await registerHotkey(withExtraDictationHotkeys(fallback));
+          if (registered) {
+            setDictationHotkey(fallback);
+            break;
+          }
+        }
+      }
+      if (!registered) {
+        logger.warn("dictation-hotkey could not bind, continuing without hard lock", { dictationHotkey }, "onboarding");
       }
       setDictationHotkeyConfirmed(true);
     } else if (currentStepId === "assistant-hotkey") {

@@ -113,7 +113,7 @@ export default function EmailVerificationStep({
     } finally {
       setIsResending(false);
     }
-  }, [resendCooldown, isResending, email, t]);
+  }, [resendCooldown, isResending, t]);
 
   return (
     <CompactOnboardingFrame showBrandMark={false} embedded={embedded}>

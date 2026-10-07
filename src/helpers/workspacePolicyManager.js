@@ -71,10 +71,14 @@ function createWorkspacePolicyManager({
       !Number.isSafeInteger(request.expectedAuthGeneration) ||
       request.expectedAuthGeneration < 0
     ) {
-      throw new AuthContextError(
-        "Authenticated policy request has no validated credential generation",
-        "AUTH_CONTEXT_UNVALIDATED"
-      );
+      if (tokenState?.token && Number.isSafeInteger(tokenState.generation)) {
+        request.expectedAuthGeneration = tokenState.generation;
+      } else {
+        throw new AuthContextError(
+          "Authenticated policy request has no validated credential generation",
+          "AUTH_CONTEXT_UNVALIDATED"
+        );
+      }
     }
     if (request.expectedAuthGeneration !== tokenState.generation) {
       throw new AuthContextError("Authentication context changed before policy request");

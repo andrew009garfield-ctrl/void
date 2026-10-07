@@ -905,17 +905,51 @@ async function applySessionTokenAndRefresh(token) {
   dockManager.setControlPanelVisible(true);
 }
 
+// Redeem a one-time auth exchange code (void://auth?code=...) for the raw
+// session token. SECURITY (R4): the auth worker no longer delivers the JWT
+// in a URL (it leaked into browser history, Referer headers and server
+// logs) — it redirects with a single-use 60-second code and returns the JWT
+// here, in the JSON body only.
+async function redeemAuthExchangeCode(code) {
+  try {
+    const res = await net.fetch(`${resolveAuthUrl()}/api/auth/exchange`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+      signal: AbortSignal.timeout(5000),
+      useSessionCookies: false,
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data?.token || data?.bearer_token || null;
+  } catch (err) {
+    if (debugLogger) {
+      debugLogger.warn("Auth exchange code redemption failed (non-fatal)", { error: err?.message });
+    }
+    return null;
+  }
+}
+
 async function handleOAuthDeepLink(deepLinkUrl) {
   try {
     const parsed = new URL(deepLinkUrl);
-    
+
     // Support Firebase ID tokens directly
     const firebaseToken = parsed.searchParams.get("firebase_token") || parsed.searchParams.get("id_token");
     if (firebaseToken) {
       void applySessionTokenAndRefresh(firebaseToken);
       return;
     }
-    
+
+    // SECURITY (R4): new handoff is a one-time exchange code, not the JWT.
+    const exchangeCode = parsed.searchParams.get("code");
+    if (exchangeCode) {
+      const rawToken = await redeemAuthExchangeCode(exchangeCode);
+      if (rawToken) void applySessionTokenAndRefresh(rawToken);
+      else if (debugLogger) debugLogger.warn("Auth exchange code redemption returned no token");
+      return;
+    }
+
     const bearerToken = parsed.searchParams.get("bearer_token");
     if (bearerToken) {
       void applySessionTokenAndRefresh(bearerToken);

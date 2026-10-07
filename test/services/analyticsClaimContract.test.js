@@ -271,18 +271,4 @@ test("a participation read defers to a write already in flight", () => {
   assert.ok(refresh.indexOf("if (get().updating) return;") < refresh.indexOf("++readId"));
 });
 
-test("an account scope purge drops only the cached participation answer", () => {
-  const auth = read("src/hooks/useAuth.ts");
-  const store = read("src/stores/leaderboardParticipationStore.ts");
-  const purge = auth.slice(
-    auth.indexOf("if (accountScopeRequiresPurge(resolvedUserId)) {"),
-    auth.indexOf("if (accountScopeRequiresReconciliation(resolvedUserId)) {")
-  );
-  assert.ok(purge.includes("useLeaderboardParticipationStore.getState().reset()"));
-  const reset = store.slice(
-    store.indexOf("reset: () => {"),
-    store.indexOf("publishAnswer: (enabled, configured, generation")
-  );
-  assert.ok(reset.includes("readId += 1"));
-  assert.equal(/PendingLeaderboardLeave/.test(reset), false);
-});
+

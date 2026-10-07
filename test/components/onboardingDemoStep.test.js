@@ -72,7 +72,7 @@ test("the dictation demo keeps its chat bubbles and no mail chrome", async (t) =
     })
   );
 
-  assert.match(markup, /src="founder\.webp"/);
+  assert.match(markup, /src="(logo\.svg|data:image\/svg\+xml[^"]+)"/);
   assert.doesNotMatch(markup, /gmail\.svg/);
   assert.doesNotMatch(markup, /assistantDemo\.email/);
 });

@@ -689,7 +689,7 @@ class ReasoningService extends BaseReasoningService {
 
     const decoder = new TextDecoder();
     let buffer = "";
-    const stripThinking = (isLocalProvider || isLanChat) && config.disableThinking !== false;
+    const stripThinking = config.disableThinking !== false;
     const filterThinkTags = stripThinking ? createStreamingThinkFilter() : null;
 
     try {
@@ -807,7 +807,7 @@ class ReasoningService extends BaseReasoningService {
     }
 
     const filterThinkTags =
-      (isLocalProvider || isLanChat) && config.disableThinking !== false
+      config.disableThinking !== false
         ? createStreamingThinkFilter()
         : null;
     let apiKey = "";

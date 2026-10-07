@@ -58,11 +58,11 @@ test("handles STT splitting or misspelling the name, with the same gating", asyn
 
   // Split across tokens ("Open Whisper") and misheard endings still match
   // when addressed...
-  assert.equal(detectAgentName("hey open whisper translate this", "Void"), true);
-  assert.equal(detectAgentName("Open Whisper, take a note", "Void"), true);
+  assert.equal(detectAgentName("hey open whisper translate this", "Open Whisper"), true);
+  assert.equal(detectAgentName("Open Whisper, take a note", "Open Whisper"), true);
   // ...but not as a mid-sentence mention.
   assert.equal(
-    detectAgentName("people keep calling open whisper a dictation app", "Void"),
+    detectAgentName("people keep calling open whisper a dictation app", "Open Whisper"),
     false
   );
 });
@@ -340,11 +340,11 @@ test("a trigger clipping part of a split name does not suppress the address", as
   const snippets = [{ trigger: "open", replacement: "OPEN" }];
 
   assert.equal(
-    detectAgentName("open whispr summarize this", "Void", undefined, snippets),
+    detectAgentName("open whispr summarize this", "Open Whisper", undefined, snippets),
     true
   );
   assert.equal(
-    stripAgentAddress("open whispr summarize this", "Void", undefined, snippets),
+    stripAgentAddress("open whispr summarize this", "Open Whisper", undefined, snippets),
     "summarize this"
   );
 });

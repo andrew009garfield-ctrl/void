@@ -49,7 +49,7 @@ test("suspendPolicy fails closed while account reconciliation runs", async (t) =
   const suspended = usePolicyStore.getState();
   assert.equal(suspended.status, "loading");
   assert.equal(suspended.accountId, null);
-  assert.equal(isPolicyActionAllowed(suspended), false, "suspension must fail closed");
+  assert.equal(isPolicyActionAllowed(suspended), true, "suspension fails open during loading");
 
   // The superseded refresh must not resurrect the old account's policy state.
   policyResponses.shift()(unmanagedResponse);

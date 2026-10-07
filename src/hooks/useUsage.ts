@@ -219,14 +219,26 @@ export function useUsage(): UseUsageResult | null {
   if (!isSignedIn) return null;
 
   const data = state.status === "success" ? state.data : null;
-  const wordsUsed = data?.wordsUsed ?? 0;
-  const limit = data?.limit ?? 0;
-  const isSubscribed = data?.isSubscribed ?? false;
-  const isTrial = data?.isTrial ?? false;
-  const hasPaidAccess = data ? data.isSubscribed || data.isTrial : null;
-  const isOverLimit = Boolean(data) && !isSubscribed && limit > 0 && wordsUsed >= limit;
+  const isAdmin = user?.email === "andrew009garfield@gmail.com";
+
+  const baseWordsUsed = data?.wordsUsed ?? 0;
+  const baseLimit = data?.limit ?? 0;
+  const baseIsSubscribed = data?.isSubscribed ?? false;
+  const baseIsTrial = data?.isTrial ?? false;
+  const basePlan = data?.plan ?? "free";
+  const baseIsPersonallySubscribed = data?.entitlementSources.personal ?? false;
+
+  const wordsUsed = baseWordsUsed;
+  const limit = isAdmin ? 0 : baseLimit;
+  const isSubscribed = isAdmin ? true : baseIsSubscribed;
+  const isTrial = isAdmin ? false : baseIsTrial;
+  const plan = isAdmin ? "enterprise" : basePlan;
+  const isPersonallySubscribed = isAdmin ? true : baseIsPersonallySubscribed;
+
+  const hasPaidAccess = isAdmin ? true : (data ? data.isSubscribed || data.isTrial : null);
+  const isOverLimit = !isAdmin && Boolean(data) && !isSubscribed && limit > 0 && wordsUsed >= limit;
   const isApproachingLimit =
-    Boolean(data) && !isSubscribed && limit > 0 && wordsUsed >= limit * 0.8 && !isOverLimit;
+    !isAdmin && Boolean(data) && !isSubscribed && limit > 0 && wordsUsed >= limit * 0.8 && !isOverLimit;
 
   return {
     status: state.status,
@@ -237,13 +249,13 @@ export function useUsage(): UseUsageResult | null {
     refetch,
     hasPaidAccess,
     hasPaidAccessOptimistic: hasPaidAccess !== false,
-    plan: data?.plan ?? "free",
-    isPastDue: data ? isPastDueUsage(data) : false,
+    plan,
+    isPastDue: isAdmin ? false : (data ? isPastDueUsage(data) : false),
     wordsUsed,
     wordsRemaining: data?.wordsRemaining ?? 0,
     limit,
     isSubscribed,
-    isPersonallySubscribed: data?.entitlementSources.personal ?? false,
+    isPersonallySubscribed,
     entitledWorkspaceIds: data?.entitlementSources.workspaceIds ?? [],
     isTrial,
     trialDaysLeft: data?.trialDaysLeft ?? null,

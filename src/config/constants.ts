@@ -160,7 +160,7 @@ export const CACHE_CONFIG = {
 } as const;
 
 // Void Cloud API
-export const VOID_API_URL = (env.VITE_VOID_API_URL as string) || "";
+export const VOID_API_URL = (env.ORACLE_API_URL as string) || (env.VITE_VOID_API_URL as string) || "";
 
 // Retry Configuration
 export const RETRY_CONFIG = {

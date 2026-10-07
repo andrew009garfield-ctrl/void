@@ -16,7 +16,7 @@ function createHandler(state, proxyFetch) {
 }
 
 test("an unvalidated or stale generation never reaches the network", async () => {
-  const state = { current: { token: "token-b", generation: 2 } };
+  const state = { current: { token: "token-b", generation: undefined } };
   let fetchCalls = 0;
   const handler = createHandler(state, async () => {
     fetchCalls += 1;
@@ -24,6 +24,7 @@ test("an unvalidated or stale generation never reaches the network", async () =>
   });
 
   const missing = await handler({ method: "GET", path: "/api/me/spaces" });
+  state.current.generation = 2; // restore for the stale check
   const stale = await handler({
     method: "GET",
     path: "/api/me/spaces",

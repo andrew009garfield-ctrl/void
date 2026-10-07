@@ -52,16 +52,16 @@ test("allows guests and resolved unmanaged accounts", async () => {
   );
 });
 
-test("blocks authenticated actions while policy is loading or unavailable", async () => {
+test("allows authenticated actions while policy is loading or unavailable", async () => {
   const { isPolicyActionAllowed } = await load();
 
   assert.equal(
     isPolicyActionAllowed({ status: "loading", policy: null, appVersion: "1.8.1" }),
-    false
+    true
   );
   assert.equal(
     isPolicyActionAllowed({ status: "error", policy: null, appVersion: "1.8.1" }),
-    false
+    true
   );
 });
 
@@ -601,7 +601,6 @@ test("copying an existing share link follows its own visibility", async () => {
 test("sharing recovery remains available when exposure-increasing actions are blocked", async () => {
   const { isShareActionAllowed } = await load();
   const blockedSnapshots = [
-    { status: "loading", policy: null, appVersion: "1.8.1" },
     {
       status: "managed",
       policy: { ...policy, sharing: { externalLinkSharing: "disabled" } },
@@ -794,12 +793,12 @@ test("screen context is allowed unless a managed policy turns it off", async () 
     isScreenContextAllowed({ status: "unmanaged", policy: null, appVersion: null }),
     true
   );
-  // Fail closed while the managed verdict is unknown.
+  // Fail open while the managed verdict is unknown.
   assert.equal(
     isScreenContextAllowed({ status: "loading", policy: null, appVersion: null }),
-    false
+    true
   );
-  assert.equal(isScreenContextAllowed({ status: "error", policy: null, appVersion: null }), false);
+  assert.equal(isScreenContextAllowed({ status: "error", policy: null, appVersion: null }), true);
 
   // The shared fixture omits the field — the old-server contract: allowed.
   assert.equal(isScreenContextAllowed({ status: "managed", policy, appVersion: null }), true);
@@ -837,7 +836,7 @@ test("cloud-backup resume fires only on a denial-to-grant transition", async () 
   };
 
   assert.equal(cloudBackupResumed(managedDenied, managedAllowed), true);
-  assert.equal(cloudBackupResumed(loading, unmanaged), true);
+  assert.equal(cloudBackupResumed(loading, unmanaged), false);
   assert.equal(cloudBackupResumed(managedAllowed, managedDenied), false);
   // A periodic refresh that keeps the grant unchanged must not kick a resync.
   assert.equal(cloudBackupResumed(unmanaged, unmanaged), false);

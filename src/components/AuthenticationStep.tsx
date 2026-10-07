@@ -354,9 +354,11 @@ export default function AuthenticationStep({
           );
 
           if (result.error) {
+            console.error("DEBUG result.error", result.error, (result.error as any).code);
             needsVerificationRef.current = false;
             const errorMessage = result.error.message || "";
             if (
+              ((result.error as any).code && EXISTING_ACCOUNT_ERROR_CODES.has((result.error as any).code)) ||
               errorMessageIncludes(errorMessage, ["already exists", "already registered", "email-already-in-use"])
             ) {
               setAuthMode("sign-in");
@@ -398,7 +400,7 @@ export default function AuthenticationStep({
         setIsSubmitting(false);
       }
     },
-    [authMode, email, fullName, password, onAuthComplete, onNeedsVerification, t]
+    [authMode, email, fullName, password, onAuthComplete, t]
   );
 
   const handleBack = useCallback(() => {

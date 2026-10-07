@@ -127,8 +127,15 @@ export default function SettingsModal({ open, onOpenChange, initialSection }: Se
         group: t("settingsModal.groups.system"),
       },
     ];
-    return isSignedIn ? items : items.filter((item) => item.id !== "workspace");
-  }, [t, isSignedIn]);
+    const freeDomains = ["gmail.com", "yahoo.com", "hotmail.com", "outlook.com", "aol.com", "icloud.com"];
+    const isWorkspaceEmail = user?.email && !freeDomains.some(d => user.email?.toLowerCase().endsWith(`@${d}`));
+    return items.filter(item => {
+      if (item.id === "workspace" && (!isSignedIn || !isWorkspaceEmail)) {
+        return false;
+      }
+      return true;
+    });
+  }, [t, isSignedIn, user?.email]);
 
   const resolveSection = (section: string | undefined): SettingsSectionType => {
     if (!section) return "account";

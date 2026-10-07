@@ -794,11 +794,12 @@ test("a policy request without a validated auth generation fails closed", async 
   const context = setup(async () => response(200, { data: validPolicy().data }));
   t.after(context.cleanup);
 
+  context.tokenState.generation = undefined;
   const result = await context.manager.getPolicy({ accountId: "account-a" });
   assert.equal(result.success, false);
   assert.equal(result.code, "AUTH_CONTEXT_UNVALIDATED");
   assert.equal(result.accountId, "account-a");
-  assert.equal(result.authGeneration, 1);
+  assert.equal(result.authGeneration == null, true);
 });
 
 test("throttled errors carry the snapshot identity fields", async (t) => {

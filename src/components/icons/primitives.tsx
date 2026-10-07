@@ -1,6 +1,8 @@
 import type { SVGProps } from "react";
 import { createIcon } from "./createIcon";
 
+/* eslint-disable react-refresh/only-export-components */
+
 type MarkProps = SVGProps<SVGSVGElement> & { strokeWidth?: number | string };
 
 // Plain geometric marks used as status dots and stop indicators. Nucleo has no

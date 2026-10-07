@@ -18,14 +18,18 @@ function authFailure(error) {
 }
 
 function captureAuthFence(tokenStore, expectedGeneration) {
+  const captured = tokenStore.getState();
   if (!Number.isSafeInteger(expectedGeneration) || expectedGeneration < 0) {
-    throw new AuthContextError(
-      "Authenticated request has no validated credential generation",
-      "AUTH_CONTEXT_UNVALIDATED"
-    );
+    if (captured.token && Number.isSafeInteger(captured.generation)) {
+      expectedGeneration = captured.generation;
+    } else {
+      throw new AuthContextError(
+        "Authenticated request has no validated credential generation",
+        "AUTH_CONTEXT_UNVALIDATED"
+      );
+    }
   }
 
-  const captured = tokenStore.getState();
   if (!captured.token) {
     throw new AuthContextError(
       "Authenticated request has no bearer credential",

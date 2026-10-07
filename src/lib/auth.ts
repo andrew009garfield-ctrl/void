@@ -1,6 +1,7 @@
 import {
   auth as firebaseAuth,
   googleProvider,
+  microsoftProvider,
   isFirebaseConfigured,
 } from "./firebase";
 import {
@@ -201,7 +202,7 @@ export async function withSessionRefresh<T>(operation: () => Promise<T>): Promis
  */
 export async function signInWithSocial(provider: SocialProvider): Promise<{ error?: Error }> {
   try {
-    if (!firebaseAuth || !googleProvider) {
+    if (!firebaseAuth || !googleProvider || !microsoftProvider) {
       return { error: new Error("Firebase Auth is not configured") };
     }
 
@@ -215,12 +216,18 @@ export async function signInWithSocial(provider: SocialProvider): Promise<{ erro
         const signinUrl = `${AUTH_URL}/api/desktop-signin/google?callbackURL=${encodeURIComponent(callbackUrl)}`;
         openExternalLink(signinUrl);
         return {};
+      } else if (provider === "microsoft") {
+        const callbackUrl = "void://auth";
+        const signinUrl = `${AUTH_URL}/api/desktop-signin/microsoft?callbackURL=${encodeURIComponent(callbackUrl)}`;
+        openExternalLink(signinUrl);
+        return {};
       }
-      return { error: new Error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} sign-in is not yet supported. Please use Google or email/password.`) };
+      return { error: new Error(`${provider.charAt(0).toUpperCase() + provider.slice(1)} sign-in is not yet supported. Please use Google, Microsoft, or email/password.`) };
     }
 
     // Web flow: use signInWithPopup
-    const result = await signInWithPopup(firebaseAuth, googleProvider);
+    const providerInstance = provider === "microsoft" ? microsoftProvider : googleProvider;
+    const result = await signInWithPopup(firebaseAuth, providerInstance);
     await handleFirebaseUserSignedIn(result);
     return {};
   } catch (error: any) {

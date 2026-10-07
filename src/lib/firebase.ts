@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, browserLocalPersistence, setPersistence } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, OAuthProvider, browserLocalPersistence, setPersistence } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,6 +14,7 @@ const firebaseConfig = {
 let app: ReturnType<typeof initializeApp> | null = null;
 let auth: ReturnType<typeof getAuth> | null = null;
 let googleProvider: GoogleAuthProvider | null = null;
+let microsoftProvider: OAuthProvider | null = null;
 let authReady: Promise<void> = Promise.resolve();
 
 if (firebaseConfig.apiKey && firebaseConfig.projectId) {
@@ -21,6 +22,8 @@ if (firebaseConfig.apiKey && firebaseConfig.projectId) {
     app = initializeApp(firebaseConfig);
     auth = getAuth(app);
     googleProvider = new GoogleAuthProvider();
+    microsoftProvider = new OAuthProvider("microsoft.com");
+    microsoftProvider.setCustomParameters({ prompt: "consent" });
 
     // Clear old Better Auth data that may conflict with Firebase
     try {
@@ -42,5 +45,5 @@ if (firebaseConfig.apiKey && firebaseConfig.projectId) {
   }
 }
 
-export { app, auth, googleProvider, authReady };
+export { app, auth, googleProvider, microsoftProvider, authReady };
 export const isFirebaseConfigured = Boolean(auth);
